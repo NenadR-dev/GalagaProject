@@ -25,6 +25,6 @@ class Gameplay(QWidget):
                 labelEnemy.setPixmap(enemy)
                 labelEnemy.move(150 + i*50, 10 + j*50)
 
-        self.setGeometry(50, 50, 800, 600)
+        self.setGeometry(0, 0, 800, 600)
         self.setWindowTitle('PyGalaga')
         self.show()
