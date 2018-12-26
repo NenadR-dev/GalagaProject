@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtCore import QSize
 from PyQt5.QtWidgets import QGroupBox, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget, QApplication, QLabel
 from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import Qt
 
 
 class Gameplay(QWidget):
@@ -28,3 +29,17 @@ class Gameplay(QWidget):
         self.setGeometry(0, 0, 800, 600)
         self.setWindowTitle('PyGalaga')
         self.show()
+
+    def keyPressEvent(self, event):
+
+        avatar = self.labelAvatar
+        key = event.key()
+
+        if key == Qt.Key_Left:
+            self.move(avatar.winfo_rootx() - 10)
+
+        elif key == Qt.Key_Right:
+            self.move(avatar.winfo_rootx() + 10)
+
+        else:
+            self.move(avatar.winfo_rootx())
