@@ -4,6 +4,8 @@ from PyQt5.QtGui import QMovie, QPainter, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 
 from Galaga.gameplay import Gameplay
+import time
+import threading
 
 
 class UIWindow(QWidget):
