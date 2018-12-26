@@ -2,6 +2,7 @@ import sys
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QMovie, QPainter
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
+from manudesign import Ui_Form
 
 
 class UIWindow(QWidget):
@@ -14,16 +15,16 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setGeometry(50, 50, 800, 600)
-        self.setFixedSize(800, 600)
         self.startUIWindow()
 
-        self.movie = QMovie("Galaga/img/space-background.gif")
+        self.movie = QMovie("img/space-background.gif")
         self.movie.frameChanged.connect(self.repaint)
         self.movie.start()
 
     def startUIWindow(self):
         self.Window = UIWindow(self)
         self.setWindowTitle("PyGalaga")
+        self = Ui_Form.setupUi(self)
         self.show()
 
     def paintEvent(self, event):
