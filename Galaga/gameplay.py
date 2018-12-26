@@ -8,22 +8,22 @@ from PyQt5.QtCore import Qt
 class Gameplay(QWidget):
     def __init__(self, parent=None):
         super(Gameplay, self).__init__(parent)
+        self.labelAvatar1 = QLabel(self)
+        self.labelAvatar2 = QLabel(self)
         self.resize(QSize(800, 600))
         self.initUI()
 
     def initUI(self):
-        labelAvatar1 = QLabel(self)
+
         avatar1 = QPixmap("img/avatar.png")
         avatar1 = avatar1.scaled(50, 50)
-        labelAvatar1.setPixmap(avatar1)
-        labelAvatar1.move(10, 540)
+        self.labelAvatar1.setPixmap(avatar1)
+        self.labelAvatar1.move(10, 540)
 
-        labelAvatar2 = QLabel(self)
         avatar2 = QPixmap("img/avatar.png")
         avatar2 = avatar1.scaled(50, 50)
-        labelAvatar2.setPixmap(avatar1)
-        labelAvatar2.move(740, 540)
-
+        self.labelAvatar2.setPixmap(avatar2)
+        self.labelAvatar2.move(740, 540)
 
         for i in range(0, 10):
             for j in range(0, 3):
@@ -39,14 +39,22 @@ class Gameplay(QWidget):
 
     def keyPressEvent(self, event):
 
-        avatar = self.labelAvatar
+        avatar1 = self.labelAvatar1
+        avatar2 = self.labelAvatar2
         key = event.key()
 
         if key == Qt.Key_Left:
-            self.move(avatar.winfo_rootx() - 10)
+            if avatar1.x() > 10:
+                avatar1.move(avatar1.x() - 10, avatar1.y())
 
         elif key == Qt.Key_Right:
-            self.move(avatar.winfo_rootx() + 10)
+            if avatar1.x() < 740:
+                avatar1.move(avatar1.x() + 10, avatar1.y())
 
-        else:
-            self.move(avatar.winfo_rootx())
+        if key == Qt.Key_A:
+            if avatar2.x() > 10:
+                avatar2.move(avatar2.x() - 10, avatar2.y())
+
+        elif key == Qt.Key_D:
+            if avatar2.x() < 740:
+                avatar2.move(avatar2.x() + 10, avatar2.y())

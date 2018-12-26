@@ -1,12 +1,7 @@
 import sys
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QMovie, QPainter, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
-<<<<<<< HEAD
-from manudesign import Ui_Form
-=======
->>>>>>> b9adcdf4309d70b3c6f6b6327f788a2c2d4a0599
-
 from gameplay import Gameplay
 
 
@@ -40,6 +35,10 @@ class MainWindow(QMainWindow):
         if frameRect.intersects(event.rect()):
             painter = QPainter(self)
             painter.drawPixmap(frameRect.left(), frameRect.top(), currentFrame)
+
+    def keyPressEvent(self, event):
+        avatar = self.Window
+        avatar.keyPressEvent(event)
 
 
 if __name__ == '__main__':
