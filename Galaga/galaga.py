@@ -2,25 +2,10 @@ import sys
 from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QMovie, QPainter, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
-<<<<<<< HEAD
-from Galaga.Widgets import MainWidget, MultiPlayerWidget
-=======
-from gameplay import Gameplay
->>>>>>> 0ebf5880fc3df6e23e99fe485b1e3f7f65407c2b
 
-class Menu(QMainWindow):
-    def __init__(self):
-        self.current = MainWidget.MainWindow()
+from Galaga.gameplay import Gameplay
 
-<<<<<<< HEAD
-    def ChangeWidget(self):
-        if(MainWidget.MainWindow.btnsingleplayer.clicked):
-            self.current = MainWidget.MainWindow()
-        elif(MainWidget.MainWindow.btnmultiplayer.clicked):
-            self.current = MultiPlayerWidget.MainWindow()
-        else:
-            self.close()
-=======
+
 class UIWindow(QWidget):
     def __init__(self, parent=None):
         super(UIWindow, self).__init__(parent)
@@ -50,10 +35,9 @@ class MainWindow(QMainWindow):
         if frameRect.intersects(event.rect()):
             painter = QPainter(self)
             painter.drawPixmap(frameRect.left(), frameRect.top(), currentFrame)
->>>>>>> 0ebf5880fc3df6e23e99fe485b1e3f7f65407c2b
 
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
-    w = Menu()
+    w = MainWindow()
     sys.exit(app.exec_())

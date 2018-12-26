@@ -8,6 +8,7 @@ class Gameplay(QWidget):
     def __init__(self, parent=None):
         super(Gameplay, self).__init__(parent)
         self.resize(QSize(800, 600))
+        self.initUI()
 
     def initUI(self):
         labelAvatar = QLabel(self)
