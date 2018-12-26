@@ -14,28 +14,25 @@ class Gameplay(QWidget, QObject):
 
     def __init__(self, parent=None):
         super(Gameplay, self).__init__(parent)
-<<<<<<< HEAD
         thread = threading.Thread(target=self.moveEnemies)
         # make test_loop terminate when the user exits the window
         thread.daemon = True
 
-=======
         self.labelAvatar1 = QLabel(self)
         self.labelAvatar2 = QLabel(self)
->>>>>>> 62552654dffd2b5c4de89b0a58a950fc5120cd9b
         self.resize(QSize(800, 600))
         self.list = []
         self.initUI()
         thread.start()
 
     def initUI(self):
-<<<<<<< HEAD
+
         self.labelAvatar = QLabel(self)
         self.avatar = QPixmap("img/avatar.png")
         self.avatar = self.avatar.scaled(50, 50)
         self.labelAvatar.setPixmap(self.avatar)
         self.labelAvatar.move(10, 540)
-=======
+
 
         avatar1 = QPixmap("img/avatar.png")
         avatar1 = avatar1.scaled(50, 50)
@@ -47,7 +44,7 @@ class Gameplay(QWidget, QObject):
         self.labelAvatar2.setPixmap(avatar2)
         self.labelAvatar2.move(740, 540)
 
->>>>>>> 62552654dffd2b5c4de89b0a58a950fc5120cd9b
+
         for i in range(0, 10):
             for j in range(0, 3):
                 self.labelEnemy = QLabel(self)
@@ -61,7 +58,7 @@ class Gameplay(QWidget, QObject):
         self.setWindowTitle('PyGalaga')
         self.show()
 
-<<<<<<< HEAD
+
     def startThread(self):
         self.thread.start()
 
@@ -80,7 +77,7 @@ class Gameplay(QWidget, QObject):
                 if self.list[29].x() == 740:
                     direction = "left"
             time.sleep(0.2)
-=======
+
 
     def keyPressEvent(self, event):
 
@@ -103,4 +100,4 @@ class Gameplay(QWidget, QObject):
         elif key == Qt.Key_D:
             if avatar2.x() < 740:
                 avatar2.move(avatar2.x() + 10, avatar2.y())
->>>>>>> 62552654dffd2b5c4de89b0a58a950fc5120cd9b
+

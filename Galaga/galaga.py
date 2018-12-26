@@ -2,15 +2,15 @@ import sys
 from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QMovie, QPainter, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
-<<<<<<< HEAD
+
 
 from Galaga.gameplay import Gameplay
 import time
 import threading
-=======
+
 from gameplay import Gameplay
 from multiprocessing import Process
->>>>>>> 62552654dffd2b5c4de89b0a58a950fc5120cd9b
+
 
 
 class UIWindow(QWidget):
