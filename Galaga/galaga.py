@@ -3,7 +3,7 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QMovie, QPainter, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 
-from Galaga.gameplay import Gameplay
+from gameplay import Gameplay
 
 
 class UIWindow(QWidget):

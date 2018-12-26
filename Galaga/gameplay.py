@@ -23,6 +23,7 @@ class Gameplay(QWidget):
         labelAvatar2.setPixmap(avatar1)
         labelAvatar2.move(740, 540)
 
+
         for i in range(0, 10):
             for j in range(0, 3):
                 labelEnemy = QLabel(self)
