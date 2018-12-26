@@ -3,6 +3,7 @@ from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtGui import QMovie, QPainter, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget
 from gameplay import Gameplay
+from multiprocessing import Process
 
 
 class UIWindow(QWidget):
@@ -37,8 +38,8 @@ class MainWindow(QMainWindow):
             painter.drawPixmap(frameRect.left(), frameRect.top(), currentFrame)
 
     def keyPressEvent(self, event):
-        avatar = self.Window
-        avatar.keyPressEvent(event)
+        window = self.Window
+        window.keyPressEvent(event)
 
 
 if __name__ == '__main__':

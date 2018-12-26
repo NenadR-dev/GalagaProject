@@ -1,8 +1,7 @@
 import sys
-from PyQt5.QtCore import QSize
+from PyQt5.QtCore import QSize, Qt
 from PyQt5.QtWidgets import QGroupBox, QGridLayout, QHBoxLayout, QVBoxLayout, QWidget, QApplication, QLabel
 from PyQt5.QtGui import QPixmap
-from PyQt5.QtCore import Qt
 
 
 class Gameplay(QWidget):
@@ -36,6 +35,7 @@ class Gameplay(QWidget):
         self.setGeometry(0, 0, 800, 600)
         self.setWindowTitle('PyGalaga')
         self.show()
+
 
     def keyPressEvent(self, event):
 
