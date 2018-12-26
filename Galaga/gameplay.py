@@ -11,11 +11,17 @@ class Gameplay(QWidget):
         self.initUI()
 
     def initUI(self):
-        labelAvatar = QLabel(self)
-        avatar = QPixmap("img/avatar.png")
-        avatar = avatar.scaled(50, 50)
-        labelAvatar.setPixmap(avatar)
-        labelAvatar.move(10, 540)
+        labelAvatar1 = QLabel(self)
+        avatar1 = QPixmap("img/avatar.png")
+        avatar1 = avatar1.scaled(50, 50)
+        labelAvatar1.setPixmap(avatar1)
+        labelAvatar1.move(10, 540)
+
+        labelAvatar2 = QLabel(self)
+        avatar2 = QPixmap("img/avatar.png")
+        avatar2 = avatar1.scaled(50, 50)
+        labelAvatar2.setPixmap(avatar1)
+        labelAvatar2.move(740, 540)
 
         for i in range(0, 10):
             for j in range(0, 3):

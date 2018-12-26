@@ -15,6 +15,7 @@ class MainWindow(QMainWindow):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setGeometry(0, 0, 800, 600)
+        self.setFixedSize(800, 600)
         self.startUIWindow()
 
         self.movie = QMovie("img/space-background.gif")
