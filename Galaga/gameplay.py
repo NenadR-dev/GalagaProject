@@ -3,9 +3,7 @@ from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QPixmap
 from threading import Lock
 import time, threading
-<<<<<<< HEAD
 from Galaga.Scripts.print_modifier import PrintModifier, MoveModifer
-=======
 
 
 def avatars_movement(self, event):
@@ -34,16 +32,13 @@ def avatars_movement(self, event):
     elif key == Qt.Key_D:
         if avatar2.x() < 740:
             avatar2.move(avatar2.x() + 10, avatar2.y())
->>>>>>> 106dcec8710c51e811f3d48911ac3f89b5e417ab
 
 
 class Gameplay(QWidget, QObject):
 
     finished = pyqtSignal()
     projectile_list = []
-<<<<<<< HEAD
     mutex = Lock()
-=======
 
     def __init__(self, parent=None):
         super(Gameplay, self).__init__(parent)
@@ -94,7 +89,6 @@ class Gameplay(QWidget, QObject):
         self.projectile_label.move(avatar.x() + 20, avatar.y() - 20)
         self.projectile_list.append(self.projectile_label)
         self.projectile_label.show()
->>>>>>> 106dcec8710c51e811f3d48911ac3f89b5e417ab
 
     @pyqtSlot()
     def enemies_movement(self):
@@ -110,16 +104,13 @@ class Gameplay(QWidget, QObject):
                     self.list[i].move(self.list[i].x() + 10, self.list[i].y())
                 if self.list[29].x() == 740:
                     direction = "left"
-<<<<<<< HEAD
             time.sleep(0.3)
-=======
             time.sleep(0.8)
 
     def keyPressEvent(self, event):
         thread = threading.Thread(target=avatars_movement(self, event))
         thread.isDaemon()
         thread.start()
->>>>>>> 106dcec8710c51e811f3d48911ac3f89b5e417ab
 
     def move_projectile(self):
         while True:
@@ -142,9 +133,7 @@ class Gameplay(QWidget, QObject):
                         break
 
     def __update_position__(self, key):
-<<<<<<< HEAD
         self.movement.move_player(self.print.label_avatar1, self.print.label_avatar2, key)
-=======
         avatar1 = self.label_avatar1
         avatar2 = self.label_avatar2
 
@@ -169,4 +158,3 @@ class Gameplay(QWidget, QObject):
 
         elif key == Qt.Key_W:
             Gameplay.create_projectile(self, avatar2)
->>>>>>> 106dcec8710c51e811f3d48911ac3f89b5e417ab
