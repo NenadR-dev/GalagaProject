@@ -103,10 +103,6 @@ class Gameplay(QWidget, QObject):
                     direction = "left"
             time.sleep(0.8)
 
-<<<<<<< HEAD
-=======
-
->>>>>>> a7249cf19930872b70c6b2d086aad74183c5f5cd
     def keyPressEvent(self, event):
         thread = threading.Thread(target=avatars_movement(self, event))
         thread.isDaemon()
@@ -120,7 +116,17 @@ class Gameplay(QWidget, QObject):
                         self.projectile_list[i].hide()
                     else:
                         self.projectile_list[i].move(self.projectile_list[i].x(), self.projectile_list[i].y() - 20)
+                        self.check_collision(self.projectile_list[i])
                 time.sleep(0.1)
+
+    def check_collision(self, projectile):
+        if projectile.isVisible() and projectile.y() < 160:
+            for enemy in reversed(self.list):
+                if enemy.isVisible() and projectile.y() <= enemy.y():
+                    if enemy.x() + 50 >= projectile.x() and enemy.x() <= projectile.x():
+                        enemy.hide()
+                        projectile.hide()
+                        break
 
     def __update_position__(self, key):
         avatar1 = self.label_avatar1
@@ -141,13 +147,9 @@ class Gameplay(QWidget, QObject):
         elif key == Qt.Key_D:
             if avatar2.x() < 740:
                 avatar2.move(avatar2.x() + 10, avatar2.y())
-<<<<<<< HEAD
-=======
 
         elif key == Qt.Key_Up:
             Gameplay.create_projectile(self, avatar1)
 
         elif key == Qt.Key_W:
             Gameplay.create_projectile(self, avatar2)
-
->>>>>>> a7249cf19930872b70c6b2d086aad74183c5f5cd
