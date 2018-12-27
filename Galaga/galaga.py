@@ -3,8 +3,11 @@ from PyQt5.QtGui import QMovie, QPainter
 from PyQt5.QtWidgets import QApplication, QMainWindow
 from Galaga.gameplay import Gameplay
 from Galaga.Scripts.key_notifier import KeyNotifier
+from Galaga.Scripts.print_modifier import PrintModifier
+from Galaga.Scripts.move_modifier import MoveModifer
 
 class MainWindow(QMainWindow):
+
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setGeometry(0, 0, 800, 600)
@@ -19,8 +22,12 @@ class MainWindow(QMainWindow):
         self.key_notifier.key_signal.connect(self.__update_position__)
         self.key_notifier.start()
 
+        self.movement = MoveModifer(self.Window.local_enemy_list)
+        self.movement.start()
+
     def start_ui_window(self):
-        self.Window = Gameplay(self)
+        self.Window = PrintModifier(self)
+        self.Window.run()
         self.setWindowTitle("PyGalaga")
         self.show()
 
@@ -45,7 +52,7 @@ class MainWindow(QMainWindow):
         self.key_notifier.rem_key(event.key())
 
     def __update_position__(self, key):
-        Gameplay.__update_position__(self.Window,key)
+        Gameplay.__update_position__(self.Window, key)
 
 
 if __name__ == '__main__':
