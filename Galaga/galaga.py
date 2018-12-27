@@ -1,10 +1,15 @@
 import sys
 from PyQt5.QtGui import QMovie, QPainter
 from PyQt5.QtWidgets import QApplication, QMainWindow
+<<<<<<< HEAD
 from Galaga.gameplay import Gameplay
 from Galaga.Scripts.key_notifier import KeyNotifier
 from Galaga.Scripts.print_modifier import PrintModifier
 from Galaga.Scripts.move_modifier import MoveModifer
+=======
+from gameplay import Gameplay
+from Scripts.key_notifier import KeyNotifier
+>>>>>>> 106dcec8710c51e811f3d48911ac3f89b5e417ab
 
 class MainWindow(QMainWindow):
 
