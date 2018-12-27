@@ -1,8 +1,8 @@
 import sys
 from PyQt5.QtGui import QMovie, QPainter
 from PyQt5.QtWidgets import QApplication, QMainWindow
-from gameplay import Gameplay
-
+from Galaga.gameplay import Gameplay
+from Galaga.Scripts.key_notifier import KeyNotifier
 
 class MainWindow(QMainWindow):
     def __init__(self, parent=None):
@@ -11,9 +11,13 @@ class MainWindow(QMainWindow):
         self.setFixedSize(800, 600)
         self.start_ui_window()
 
-        self.movie = QMovie("Galaga/img/space-background.gif")
+        self.movie = QMovie("img/space-background.gif")
         self.movie.frameChanged.connect(self.repaint)
         self.movie.start()
+
+        self.key_notifier = KeyNotifier()
+        self.key_notifier.key_signal.connect(self.__update_position__)
+        self.key_notifier.start()
 
     def start_ui_window(self):
         self.Window = Gameplay(self)
@@ -29,9 +33,20 @@ class MainWindow(QMainWindow):
             painter.drawPixmap(frame_rect.left(), frame_rect.top(), current_frame)
 
     def keyPressEvent(self, event):
-        window = self.Window
-        window.keyPressEvent(event)
+        self.key_notifier.add_key(event.key())
 
+    def closeEvent(self, event):
+        self.key_notifier.die()
+
+    def keyPressEvent(self, event):
+        self.key_notifier.add_key(event.key())
+
+    def keyReleaseEvent(self, event):
+        self.key_notifier.rem_key(event.key())
+
+
+    def __update_position__(self, key):
+        Gameplay.__update_position__(self.Window,key)
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
