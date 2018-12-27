@@ -30,6 +30,11 @@ def avatars_movement(self, event):
         if avatar2.x() < 740:
             avatar2.move(avatar2.x() + 10, avatar2.y())
 
+<<<<<<< HEAD
+=======
+
+
+>>>>>>> bf468f1c642778baa67e5ab3f2e4971c317f9894
 class Gameplay(QWidget, QObject):
 
     finished = pyqtSignal()
@@ -48,6 +53,7 @@ class Gameplay(QWidget, QObject):
         self.resize(QSize(800, 600))
         self.list = []
         self.init_ui()
+
         thread.start()
         projectile_thread.start()
 
@@ -101,6 +107,7 @@ class Gameplay(QWidget, QObject):
                     direction = "left"
             time.sleep(0.8)
 
+<<<<<<< HEAD
     def keyPressEvent(self, event):
         thread = threading.Thread(target=avatars_movement(self, event))
         thread.isDaemon()
@@ -115,3 +122,24 @@ class Gameplay(QWidget, QObject):
                     else:
                         self.projectile_list[i].move(self.projectile_list[i].x(), self.projectile_list[i].y() - 20)
                 time.sleep(0.1)
+=======
+    def __update_position__(self, key):
+        avatar1 = self.label_avatar1
+        avatar2 = self.label_avatar2
+
+        if key == Qt.Key_Left:
+            if avatar1.x() > 10:
+                avatar1.move(avatar1.x() - 10, avatar1.y())
+
+        elif key == Qt.Key_Right:
+            if avatar1.x() < 740:
+                avatar1.move(avatar1.x() + 10, avatar1.y())
+
+        elif key == Qt.Key_A:
+            if avatar2.x() > 10:
+                avatar2.move(avatar2.x() - 10, avatar2.y())
+
+        elif key == Qt.Key_D:
+            if avatar2.x() < 740:
+                avatar2.move(avatar2.x() + 10, avatar2.y())
+>>>>>>> bf468f1c642778baa67e5ab3f2e4971c317f9894
