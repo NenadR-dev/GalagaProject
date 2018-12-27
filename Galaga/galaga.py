@@ -44,9 +44,9 @@ class MainWindow(QMainWindow):
     def keyReleaseEvent(self, event):
         self.key_notifier.rem_key(event.key())
 
-
     def __update_position__(self, key):
         Gameplay.__update_position__(self.Window,key)
+
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)

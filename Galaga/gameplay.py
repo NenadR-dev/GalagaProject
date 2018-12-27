@@ -103,6 +103,10 @@ class Gameplay(QWidget, QObject):
                     direction = "left"
             time.sleep(0.8)
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> a7249cf19930872b70c6b2d086aad74183c5f5cd
     def keyPressEvent(self, event):
         thread = threading.Thread(target=avatars_movement(self, event))
         thread.isDaemon()
@@ -137,3 +141,13 @@ class Gameplay(QWidget, QObject):
         elif key == Qt.Key_D:
             if avatar2.x() < 740:
                 avatar2.move(avatar2.x() + 10, avatar2.y())
+<<<<<<< HEAD
+=======
+
+        elif key == Qt.Key_Up:
+            Gameplay.create_projectile(self, avatar1)
+
+        elif key == Qt.Key_W:
+            Gameplay.create_projectile(self, avatar2)
+
+>>>>>>> a7249cf19930872b70c6b2d086aad74183c5f5cd
