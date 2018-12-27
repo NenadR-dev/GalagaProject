@@ -11,7 +11,7 @@ class MainWindow(QMainWindow):
         self.setFixedSize(800, 600)
         self.start_ui_window()
 
-        self.movie = QMovie("Galaga/img/space-background.gif")
+        self.movie = QMovie("img/space-background.gif")
         self.movie.frameChanged.connect(self.repaint)
         self.movie.start()
 
