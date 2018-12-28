@@ -1,7 +1,6 @@
 import sys
 from PyQt5.QtGui import QMovie, QPainter
 from PyQt5.QtWidgets import QApplication, QMainWindow
-<<<<<<< HEAD
 
 from Galaga.Scripts.print_modifier import PrintModifier
 from Galaga.Scripts.move_modifier import MoveModifer
@@ -9,7 +8,6 @@ from Galaga.Scripts.move_modifier import MoveModifer
 from Galaga.gameplay import Gameplay
 from Galaga.Scripts.key_notifier import KeyNotifier
 
-=======
 from Galaga.gameplay import Gameplay
 from Galaga.Scripts.key_notifier import KeyNotifier
 from Galaga.Scripts.print_modifier import PrintModifier
@@ -17,7 +15,7 @@ from Galaga.Scripts.move_modifier import MoveModifer
 from gameplay import Gameplay
 from Scripts.key_notifier import KeyNotifier
 from Scripts.projectile_modifier import ProjectileModifier
->>>>>>> 82eaaf9c1af43524f40031997ae54aba2b55f79e
+
 
 class MainWindow(QMainWindow):
 
