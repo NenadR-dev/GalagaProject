@@ -6,7 +6,7 @@ import time, threading
 from Galaga.Scripts.move_modifier import MoveModifer
 
 
-class PrintModifier(QWidget, QObject):
+class PrintModifier(QWidget):
 
     def __init__(self, parent=None):
         super(PrintModifier, self).__init__(parent)
@@ -15,11 +15,9 @@ class PrintModifier(QWidget, QObject):
         self.label_avatar1 = QLabel(self)
         self.label_avatar2 = QLabel(self)
         self.resize(QSize(800, 600))
-
-    def run(self):
+        self.projectile_list = []
         self.print_enemies()
         self.print_player()
-        self
 
     def print_enemies(self):
         self.mutex.acquire()
@@ -51,13 +49,13 @@ class PrintModifier(QWidget, QObject):
         self.label_avatar2.show()
         self.mutex.release()
 
-    def print_projectile(self, avatar):
+    def print_projectile(self, avatar, projectiles):
         self.mutex.acquire()
         pew = QPixmap("img/projectile.png")
         pew = pew.scaled(10, 10)
         self.projectile_label = QLabel(self)
         self.projectile_label.setPixmap(pew)
         self.projectile_label.move(avatar.x() + 20, avatar.y() - 20)
-        self.projectile_list.append(self.projectile_label)
+        projectiles.append(self.projectile_label)
         self.projectile_label.show()
         self.mutex.release()

@@ -7,10 +7,12 @@ import time, threading
 
 class MoveModifer(QThread):
 
-    def __init__(self, enemy_list):
+    def __init__(self, enemy_list, print_modifier, projectile_modifier):
         super().__init__(parent=None)
         self.mutex = Lock()
         self.enemies = enemy_list
+        self.printer = print_modifier
+        self.projectiles = projectile_modifier
 
     def run(self):
         self.move_enemies(enemy_list=self.enemies)
@@ -32,10 +34,10 @@ class MoveModifer(QThread):
             self.mutex.release()
             time.sleep(0.5)
 
-    def move_player(self, player1, player2, key):
+    def move_player(self, key):
         self.mutex.acquire()
-        avatar1 = player1
-        avatar2 = player2
+        avatar1 = self.printer.label_avatar1
+        avatar2 = self.printer.label_avatar2
 
         if key == Qt.Key_Left:
             if avatar1.x() > 10:
@@ -54,21 +56,9 @@ class MoveModifer(QThread):
                 avatar2.move(avatar2.x() + 10, avatar2.y())
 
         elif key == Qt.Key_Up:
-            Gameplay.create_projectile(self, avatar1)
+            self.projectiles.print_projectile(avatar1)
 
         elif key == Qt.Key_W:
-            Gameplay.create_projectile(self, avatar2)
+            self.projectiles.print_projectile(avatar2)
 
         self.mutex.release()
-
-    def move_projectiles(self, projectile_list):
-        while True:
-            self.mutex.acquire()
-            if len(self.projectile_list) > 0:
-                for i in range(len(self.projectile_list)):
-                    if self.projectile_list[i].y() <= 0:
-                        self.projectile_list[i].hide()
-                    else:
-                        self.projectile_list[i].move(self.projectile_list[i].x(), self.projectile_list[i].y() - 20)
-                self.mutex.release()
-                time.sleep(0.1)

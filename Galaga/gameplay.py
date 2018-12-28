@@ -3,9 +3,13 @@ from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QPixmap
 from threading import Lock
 import time, threading
+<<<<<<< HEAD
 
 from Galaga.Scripts.print_modifier import PrintModifier, MoveModifer
 
+=======
+from Galaga.Scripts.print_modifier import PrintModifier, MoveModifer
+>>>>>>> 82eaaf9c1af43524f40031997ae54aba2b55f79e
 
 
 def avatars_movement(self, event):
@@ -34,7 +38,10 @@ def avatars_movement(self, event):
     elif key == Qt.Key_D:
         if avatar2.x() < 740:
             avatar2.move(avatar2.x() + 10, avatar2.y())
+<<<<<<< HEAD
 
+=======
+>>>>>>> 82eaaf9c1af43524f40031997ae54aba2b55f79e
 
 
 class Gameplay(QWidget, QObject):
@@ -42,7 +49,10 @@ class Gameplay(QWidget, QObject):
     finished = pyqtSignal()
     projectile_list = []
     mutex = Lock()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 82eaaf9c1af43524f40031997ae54aba2b55f79e
 
     def __init__(self, parent=None):
         super(Gameplay, self).__init__(parent)
@@ -93,7 +103,10 @@ class Gameplay(QWidget, QObject):
         self.projectile_label.move(avatar.x() + 20, avatar.y() - 20)
         self.projectile_list.append(self.projectile_label)
         self.projectile_label.show()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 82eaaf9c1af43524f40031997ae54aba2b55f79e
 
     @pyqtSlot()
     def enemies_movement(self):
@@ -109,14 +122,22 @@ class Gameplay(QWidget, QObject):
                     self.list[i].move(self.list[i].x() + 10, self.list[i].y())
                 if self.list[29].x() == 740:
                     direction = "left"
+<<<<<<< HEAD
 
             time.sleep(0.3)
+=======
+            time.sleep(0.3)
+            time.sleep(0.8)
+>>>>>>> 82eaaf9c1af43524f40031997ae54aba2b55f79e
 
     def keyPressEvent(self, event):
         thread = threading.Thread(target=avatars_movement(self, event))
         thread.isDaemon()
         thread.start()
+<<<<<<< HEAD
 
+=======
+>>>>>>> 82eaaf9c1af43524f40031997ae54aba2b55f79e
 
     def move_projectile(self):
         while True:
@@ -139,9 +160,13 @@ class Gameplay(QWidget, QObject):
                         break
 
     def __update_position__(self, key):
+<<<<<<< HEAD
 
         self.movement.move_player(self.print.label_avatar1, self.print.label_avatar2, key)
 
+=======
+        self.movement.move_player(self.print.label_avatar1, self.print.label_avatar2, key)
+>>>>>>> 82eaaf9c1af43524f40031997ae54aba2b55f79e
         avatar1 = self.label_avatar1
         avatar2 = self.label_avatar2
 
@@ -166,4 +191,7 @@ class Gameplay(QWidget, QObject):
 
         elif key == Qt.Key_W:
             Gameplay.create_projectile(self, avatar2)
+<<<<<<< HEAD
 
+=======
+>>>>>>> 82eaaf9c1af43524f40031997ae54aba2b55f79e
