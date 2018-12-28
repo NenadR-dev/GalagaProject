@@ -59,3 +59,25 @@ class PrintModifier(QWidget, MyThread):
         self.projectile_label.show()
         self.move_p.emit(self.projectile_label)
         self.mutex.release()
+
+    @pyqtSlot(int, int)
+    def move_player(self, player, i):
+        if player == 1:
+            self.mutex.acquire()
+            self.label_avatar1.move(i,self.label_avatar1.y())
+            self.mutex.release()
+        elif player == 2:
+            self.mutex.acquire()
+            self.label_avatar2.move(i,self.label_avatar2.y())
+            self.mutex.release()
+
+    def move_enemy(self, index, position):
+        self.mutex.acquire()
+        self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
+        self.mutex.release()
+
+    @pyqtSlot(QLabel, int)
+    def move_projectile(self, projectile, position):
+        self.mutex.acquire()
+        projectile.move(projectile.x(), position)
+        self.mutex.release()

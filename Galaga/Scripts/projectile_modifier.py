@@ -8,6 +8,7 @@ import time, threading
 
 class ProjectileModifier(MyThread):
 
+    projectile_move_signal = pyqtSignal(QLabel, int)
 
     def __init__(self, enemy_list, print_modifier):
         super().__init__(parent=None)
@@ -20,8 +21,6 @@ class ProjectileModifier(MyThread):
 
     def move_projectiles(self, projectile_list):
         while True:
-            print(len(projectile_list))
-            self.projectile_mutex.acquire
             if len(projectile_list) > 0:
                 for projectile in projectile_list:
                     if projectile.y() <= 0:
@@ -29,13 +28,10 @@ class ProjectileModifier(MyThread):
                         projectile_list.remove(projectile)
                         self.mutex.release()
                     else:
-                        self.mutex.acquire()
-                        projectile.move(projectile.x(), projectile.y() - 20)
-                        self.mutex.release()
+                        self.projectile_move_signal.emit(projectile, projectile.y() - 5)
                         self.check_collision(projectile_list, projectile)
-            self.projectile_mutex.release
 
-            time.sleep(0.1)
+            time.sleep(0.025)
 
     def check_collision(self, projectile_list, projectile):
         if projectile.isVisible() and projectile.y() < 160:

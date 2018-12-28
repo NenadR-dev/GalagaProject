@@ -22,21 +22,31 @@ class MainWindow(QMainWindow):
         self.setFixedSize(800, 600)
         self.start_ui_window()
 
+        #set gif background
         self.movie = QMovie("img/space-background.gif")
         self.movie.frameChanged.connect(self.repaint)
         self.movie.start()
 
+        #set key notifiers
         self.key_notifier = KeyNotifier()
         self.key_notifier.key_signal.connect(self.__update_position__)
         self.key_notifier.start()
 
+        #set projectiles
         self.projectiles = ProjectileModifier(self.Window.local_enemy_list, self.Window)
+        self.projectiles.projectile_move_signal.connect(self.Window.move_projectile)
         self.Window.move_p.connect(self.projectiles.add_projectile)
+        self.Window.daemon = True
         self.projectiles.start()
 
+        #set player movement
         self.movement = MoveModifer(self.Window.local_enemy_list, self.Window)
-        self.movement.create_projectile.connect(self.Window.print_projectile)
+        self.movement.create_projectile_signal.connect(self.Window.print_projectile)
+        self.movement.move_player_signal.connect(self.Window.move_player)
+        self.movement.move_enemy_signal.connect(self.Window.move_enemy)
+        self.movement.daemon = True
         self.movement.start()
+
 
     def start_ui_window(self):
         self.Window = PrintModifier(self)
