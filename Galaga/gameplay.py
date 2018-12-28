@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QPixmap
 from threading import Lock
 import time, threading
-from Galaga.Scripts.print_modifier import PrintModifier, MoveModifer
+from Galaga.Scripts.print_modifier import PrintModifier
 
 
 def avatars_movement(self, event):

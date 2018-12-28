@@ -3,15 +3,16 @@ from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QPixmap
 from threading import Lock
 import time, threading
-from Galaga.Scripts.move_modifier import MoveModifer
+from Galaga.Scripts.my_thread import MyThread
 
 
-class PrintModifier(QWidget):
+class PrintModifier(QWidget, MyThread):
+
+    move_p = pyqtSignal(QLabel)
 
     def __init__(self, parent=None):
         super(PrintModifier, self).__init__(parent)
         self.local_enemy_list = []
-        self.mutex = Lock()
         self.label_avatar1 = QLabel(self)
         self.label_avatar2 = QLabel(self)
         self.resize(QSize(800, 600))
@@ -20,9 +21,9 @@ class PrintModifier(QWidget):
         self.print_player()
 
     def print_enemies(self):
-        self.mutex.acquire()
         for i in range(0, 10):
             for j in range(0, 3):
+                self.mutex.acquire()
                 label_enemy = QLabel(self)
                 enemy = QPixmap("img/enemy.png")
                 enemy = enemy.scaled(50, 50)
@@ -30,9 +31,7 @@ class PrintModifier(QWidget):
                 label_enemy.move(150 + i * 50, 10 + j * 50)
                 label_enemy.show()
                 self.local_enemy_list.append(label_enemy)
-        self.setGeometry(0, 0, 800, 600)
-        self.setWindowTitle('PyGalaga')
-        self.mutex.release()
+                self.mutex.release()
 
     def print_player(self):
         self.mutex.acquire()
@@ -49,13 +48,13 @@ class PrintModifier(QWidget):
         self.label_avatar2.show()
         self.mutex.release()
 
-    def print_projectile(self, avatar, projectiles):
+    @pyqtSlot(QLabel)
+    def print_projectile(self, avatar):
         self.mutex.acquire()
         pew = QPixmap("img/projectile.png")
         pew = pew.scaled(10, 10)
         self.projectile_label = QLabel(self)
         self.projectile_label.setPixmap(pew)
         self.projectile_label.move(avatar.x() + 20, avatar.y() - 20)
-        projectiles.append(self.projectile_label)
         self.projectile_label.show()
         self.mutex.release()
