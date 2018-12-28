@@ -31,6 +31,7 @@ class MainWindow(QMainWindow):
         self.key_notifier.start()
 
         self.projectiles = ProjectileModifier(self.Window.local_enemy_list, self.Window)
+        self.Window.move_p.connect(self.projectiles.add_projectile)
         self.projectiles.start()
 
         self.movement = MoveModifer(self.Window.local_enemy_list, self.Window)

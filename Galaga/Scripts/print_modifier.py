@@ -57,4 +57,5 @@ class PrintModifier(QWidget, MyThread):
         self.projectile_label.setPixmap(pew)
         self.projectile_label.move(avatar.x() + 20, avatar.y() - 20)
         self.projectile_label.show()
+        self.move_p.emit(self.projectile_label)
         self.mutex.release()

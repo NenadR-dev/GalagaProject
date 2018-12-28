@@ -7,5 +7,4 @@ import time, threading
 
 class MyThread(QThread):
     mutex = Lock()
-    bullet_mutex = Lock()
-    print_mutex = Lock()
+    projectile_mutex = Lock()
