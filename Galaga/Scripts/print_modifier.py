@@ -50,27 +50,29 @@ class PrintModifier(QWidget, MyThread):
 
     @pyqtSlot(QLabel)
     def print_projectile(self, avatar):
-        self.mutex.acquire()
-        pew = QPixmap("img/projectile.png")
-        pew = pew.scaled(10, 10)
-        self.projectile_label = QLabel(self)
-        self.projectile_label.setPixmap(pew)
-        self.projectile_label.move(avatar.x() + 20, avatar.y() - 20)
-        self.projectile_label.show()
-        self.move_p.emit(self.projectile_label)
-        self.mutex.release()
+        if avatar.isVisible():
+            self.mutex.acquire()
+            pew = QPixmap("img/projectile.png")
+            pew = pew.scaled(10, 10)
+            self.projectile_label = QLabel(self)
+            self.projectile_label.setPixmap(pew)
+            self.projectile_label.move(avatar.x() + 20, avatar.y() - 20)
+            self.projectile_label.show()
+            self.move_p.emit(self.projectile_label)
+            self.mutex.release()
 
     @pyqtSlot(int, int)
     def move_player(self, player, i):
         if player == 1:
             self.mutex.acquire()
-            self.label_avatar1.move(i,self.label_avatar1.y())
+            self.label_avatar1.move(i, self.label_avatar1.y())
             self.mutex.release()
         elif player == 2:
             self.mutex.acquire()
-            self.label_avatar2.move(i,self.label_avatar2.y())
+            self.label_avatar2.move(i, self.label_avatar2.y())
             self.mutex.release()
 
+    @pyqtSlot(int, int)
     def move_enemy(self, index, position):
         self.mutex.acquire()
         self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
@@ -81,3 +83,14 @@ class PrintModifier(QWidget, MyThread):
         self.mutex.acquire()
         projectile.move(projectile.x(), position)
         self.mutex.release()
+
+    @pyqtSlot()
+    def new_level(self):
+        self.print_enemies()
+
+    @pyqtSlot(int)
+    def remove_player(self, index):
+        if index == 1:
+            self.label_avatar1.hide()
+        elif index == 2:
+            self.label_avatar2.hide()

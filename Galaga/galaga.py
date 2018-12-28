@@ -1,40 +1,27 @@
 import sys
 from PyQt5.QtGui import QMovie, QPainter
-<<<<<<< HEAD
-from PyQt5.QtWidgets import QApplication, QMainWindow
-
-from Galaga.Scripts.print_modifier import PrintModifier
-from Galaga.Scripts.move_modifier import MoveModifer
-
-from Galaga.gameplay import Gameplay
-from Galaga.Scripts.key_notifier import KeyNotifier
-
-=======
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
-from PyQt5.QtCore import pyqtSlot
->>>>>>> cdb5bf4bccfa9cbf278418b1ef9a05fe56dcf808
-from Galaga.gameplay import Gameplay
 from Galaga.Scripts.key_notifier import KeyNotifier
 from Galaga.Scripts.print_modifier import PrintModifier
 from Galaga.Scripts.move_modifier import MoveModifer
-from gameplay import Gameplay
 from Scripts.key_notifier import KeyNotifier
 from Scripts.projectile_modifier import ProjectileModifier
-
-<<<<<<< HEAD
-=======
-import threading
-import time
->>>>>>> cdb5bf4bccfa9cbf278418b1ef9a05fe56dcf808
+from Galaga.gameplay import Gameplay
 
 class MainWindow(QMainWindow):
-
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setGeometry(0, 0, 800, 600)
         self.setFixedSize(800, 600)
         self.start_ui_window()
+        self.gameplay = Gameplay()
+
+        #set game logic
+        self.gameplay.next_level_signal.connect(self.Window.new_level)
+        self.gameplay.player_killed_signal.connect(self.Window.remove_player)
+        self.gameplay.daemon = True
+        self.gameplay.start()
 
         #set gif background
         self.movie = QMovie("img/space-background.gif")
@@ -47,14 +34,14 @@ class MainWindow(QMainWindow):
         self.key_notifier.start()
 
         #set projectiles
-        self.projectiles = ProjectileModifier(self.Window.local_enemy_list, self.Window)
+        self.projectiles = ProjectileModifier(self.Window.local_enemy_list, self.Window, self.gameplay)
         self.projectiles.projectile_move_signal.connect(self.Window.move_projectile)
         self.Window.move_p.connect(self.projectiles.add_projectile)
         self.Window.daemon = True
         self.projectiles.start()
 
-        #set player movement
-        self.movement = MoveModifer(self.Window.local_enemy_list, self.Window)
+        #set movement
+        self.movement = MoveModifer(self.Window.local_enemy_list, self.Window, self.gameplay)
         self.movement.create_projectile_signal.connect(self.Window.print_projectile)
         self.movement.move_player_signal.connect(self.Window.move_player)
         self.movement.move_enemy_signal.connect(self.Window.move_enemy)
