@@ -81,3 +81,23 @@ class PrintModifier(QWidget, MyThread):
         self.mutex.acquire()
         projectile.move(projectile.x(), position)
         self.mutex.release()
+
+    @pyqtSlot(int, int, int)
+    def enemy_move_attack(self, enemy_index, coord_x, coord_y):
+        self.mutex.acquire()
+        enemy = self.local_enemy_list[enemy_index]
+        enemy.move(enemy.x() + coord_x, enemy.y() + coord_y)
+        self.mutex.release()
+
+    @pyqtSlot(int)
+    def return_enemy(self, enemy_index):
+        self.mutex.acquire()
+        if enemy_index == 0 or enemy_index == 1 or enemy_index == 2:
+            neighbour = self.local_enemy_list[enemy_index + 3]
+            enemy = self.local_enemy_list[enemy_index]
+            enemy.move(neighbour.x() - 50, neighbour.y())
+        else:
+            neighbour = self.local_enemy_list[enemy_index - 3]
+            enemy = self.local_enemy_list[enemy_index]
+            enemy.move(neighbour.x() + 50, neighbour.y())
+        self.mutex.release()

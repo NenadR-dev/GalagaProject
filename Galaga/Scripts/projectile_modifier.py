@@ -31,7 +31,7 @@ class ProjectileModifier(MyThread):
                         self.projectile_move_signal.emit(projectile, projectile.y() - 5)
                         self.check_collision(projectile_list, projectile)
 
-            time.sleep(0.025)
+            time.sleep(0.02)
 
     def check_collision(self, projectile_list, projectile):
         if projectile.isVisible() and projectile.y() < 160:

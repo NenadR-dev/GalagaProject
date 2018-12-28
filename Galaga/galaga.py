@@ -1,20 +1,14 @@
 import sys
 from PyQt5.QtGui import QMovie, QPainter
-from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
-from PyQt5.QtCore import pyqtSlot
-from Galaga.gameplay import Gameplay
-from Galaga.Scripts.key_notifier import KeyNotifier
+from PyQt5.QtWidgets import QApplication, QMainWindow
 from Galaga.Scripts.print_modifier import PrintModifier
 from Galaga.Scripts.move_modifier import MoveModifer
-from gameplay import Gameplay
-from Scripts.key_notifier import KeyNotifier
-from Scripts.projectile_modifier import ProjectileModifier
+from Galaga.Scripts.key_notifier import KeyNotifier
+from Galaga.Scripts.projectile_modifier import ProjectileModifier
+from Galaga.Scripts.enemy_attacks import EnemyAttacks
 
-import threading
-import time
 
 class MainWindow(QMainWindow):
-
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -47,6 +41,13 @@ class MainWindow(QMainWindow):
         self.movement.daemon = True
         self.movement.start()
 
+        # set enemy attacks
+        self.enemy_move_attack = EnemyAttacks(self.Window.local_enemy_list, self.Window.label_avatar1,
+                                              self.Window.label_avatar2)
+        self.enemy_move_attack.enemy_attack_move_signal.connect(self.Window.enemy_move_attack)
+        self.enemy_move_attack.return_enemy_signal.connect(self.Window.return_enemy)
+        self.enemy_move_attack.daemon = True
+        self.enemy_move_attack.start()
 
     def start_ui_window(self):
         self.Window = PrintModifier(self)
@@ -72,8 +73,6 @@ class MainWindow(QMainWindow):
 
     def __update_position__(self, key):
         self.movement.move_player(key)
-        #Gameplay.__update_position__(self.Window, key)
-
 
 
 if __name__ == '__main__':
