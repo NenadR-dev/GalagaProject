@@ -2,12 +2,12 @@ from PyQt5.QtCore import QSize, pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QPixmap
 from Galaga.Scripts.my_thread import MyThread
-import time
 
 
 class PrintModifier(QWidget, MyThread):
 
     move_p = pyqtSignal(QLabel)
+    move_enemy_p = pyqtSignal(QLabel)
 
     def __init__(self, parent=None):
         super(PrintModifier, self).__init__(parent)
@@ -104,6 +104,27 @@ class PrintModifier(QWidget, MyThread):
             neighbour = self.local_enemy_list[enemy_index - 3]
             enemy = self.local_enemy_list[enemy_index]
             enemy.move(neighbour.x() + 50, neighbour.y())
+        self.mutex.release()
+
+    @pyqtSlot(int)
+    def enemy_projectile_attack(self, enemy_index):
+        enemy = self.local_enemy_list[enemy_index]
+        if enemy.isVisible():
+            self.mutex.acquire()
+            pew = QPixmap("img/enemy_projectile.png")
+            pew = pew.scaled(10, 10)
+            self.projectile_label = QLabel(self)
+            self.projectile_label.setPixmap(pew)
+            self.projectile_label.move(enemy.x() + 20, enemy.y() + 20)
+            self.projectile_label.show()
+            self.projectile_list.append(self.projectile_label)
+            self.move_enemy_p.emit(self.projectile_label)
+            self.mutex.release()
+
+    @pyqtSlot(QLabel, int)
+    def move_enemy_projectile(self, projectile, position):
+        self.mutex.acquire()
+        projectile.move(projectile.x(), position)
         self.mutex.release()
 
     @pyqtSlot()

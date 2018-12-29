@@ -1,26 +1,25 @@
 from PyQt5.QtCore import pyqtSignal
-from PyQt5.QtWidgets import QLabel
 import time, random
 from Galaga.Scripts.my_thread import MyThread
 
 
-class EnemyAttacks(MyThread):
+class EnemyMoveAttack(MyThread):
 
     enemy_attack_move_signal = pyqtSignal(int, int, int)
-    enemy_attack_projectile_signal = pyqtSignal(QLabel)
     return_enemy_signal = pyqtSignal(int)
 
-    def __init__(self, enemy_list, avatar1, avatar2):
+    def __init__(self, enemy_list, avatar1, avatar2, gameplay):
         super().__init__(parent=None)
         self.enemies = enemy_list
         self.avatar1 = avatar1
         self.avatar2 = avatar2
+        self.gameplay = gameplay
 
     def run(self):
         self.enemy_clock()
 
-    def kill_avatar_success(self, avatar, enemy_index):
-        avatar.hide()
+    def kill_avatar_success(self, avatar_index, enemy_index):
+        self.gameplay.player_hit(avatar_index)
         self.enemies[enemy_index].hide()
         self.return_enemy_signal.emit(enemy_index)
 
@@ -51,9 +50,9 @@ class EnemyAttacks(MyThread):
             x_coord_diff += self.movement_factor
             time.sleep(0.02)
         if self.avatar1.isVisible() and abs(enemy.x() - self.avatar1.x()) <= 50:
-            self.kill_avatar_success(self.avatar1, enemy_index)
+            self.kill_avatar_success(1, enemy_index)
         elif self.avatar1.isVisible() and abs(enemy.x() - self.avatar2.x()) <= 50:
-            self.kill_avatar_success(self.avatar2, enemy_index)
+            self.kill_avatar_success(2, enemy_index)
         else:
             self.kill_avatar_fail(enemy_index)
 
@@ -61,6 +60,32 @@ class EnemyAttacks(MyThread):
         time.sleep(5)
         while True:
             time_delay = random.randrange(5, 10)
+            time.sleep(time_delay)
+            if self.avatar1.isVisible() or self.avatar2.isVisible():
+                self.start_enemy_attack()
+
+
+class EnemyProjectileAttack(MyThread):
+
+    enemy_attack_projectile_signal = pyqtSignal(int)
+
+    def __init__(self, enemy_list, avatar1, avatar2):
+        super().__init__(parent=None)
+        self.enemies = enemy_list
+        self.avatar1 = avatar1
+        self.avatar2 = avatar2
+
+    def run(self):
+        self.enemy_clock()
+
+    def start_enemy_attack(self):
+        enemy_index = random.randint(0, len(self.enemies))
+        self.enemy_attack_projectile_signal.emit(enemy_index)
+
+    def enemy_clock(self):
+        time.sleep(3)
+        while True:
+            time_delay = random.randrange(4, 7)
             time.sleep(time_delay)
             if self.avatar1.isVisible() or self.avatar2.isVisible():
                 self.start_enemy_attack()

@@ -1,11 +1,11 @@
 import sys
 from PyQt5.QtGui import QMovie, QPainter
-from Galaga.Scripts.enemy_attacks import EnemyAttacks
+from Galaga.Scripts.enemy_attacks import EnemyMoveAttack, EnemyProjectileAttack
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
 from Galaga.Scripts.print_modifier import PrintModifier
 from Galaga.Scripts.move_modifier import MoveModifer
 from Galaga.Scripts.key_notifier import KeyNotifier
-from Galaga.Scripts.projectile_modifier import ProjectileModifier
+from Galaga.Scripts.projectile_modifier import ProjectileModifier, EnemyProjectileModifier
 from Galaga.gameplay import Gameplay
 
 class MainWindow(QMainWindow):
@@ -40,6 +40,10 @@ class MainWindow(QMainWindow):
         self.Window.move_p.connect(self.projectiles.add_projectile)
         self.Window.daemon = True
         self.projectiles.start()
+        self.enemy_projectiles = EnemyProjectileModifier(self.Window.label_avatar1, self.Window.label_avatar2, self.Window, self.gameplay)
+        self.enemy_projectiles.projectile_move_signal.connect(self.Window.move_enemy_projectile)
+        self.Window.move_enemy_p.connect(self.enemy_projectiles.add_projectile)
+        self.enemy_projectiles.start()
 
         # set movement
         self.movement = MoveModifer(self.Window.local_enemy_list, self.Window, self.gameplay)
@@ -50,12 +54,17 @@ class MainWindow(QMainWindow):
         self.movement.start()
 
         # set enemy attacks
-        self.enemy_move_attack = EnemyAttacks(self.Window.local_enemy_list, self.Window.label_avatar1,
-                                              self.Window.label_avatar2)
+        self.enemy_move_attack = EnemyMoveAttack(self.Window.local_enemy_list, self.Window.label_avatar1,
+                                              self.Window.label_avatar2, self.gameplay)
         self.enemy_move_attack.enemy_attack_move_signal.connect(self.Window.enemy_move_attack)
         self.enemy_move_attack.return_enemy_signal.connect(self.Window.return_enemy)
         self.enemy_move_attack.daemon = True
         self.enemy_move_attack.start()
+        self.enemy_projectile_attack = EnemyProjectileAttack(self.Window.local_enemy_list, self.Window.label_avatar1,
+                                                 self.Window.label_avatar2)
+        self.enemy_projectile_attack.enemy_attack_projectile_signal.connect(self.Window.enemy_projectile_attack)
+        self.enemy_projectile_attack.daemon = True
+        self.enemy_projectile_attack.start()
 
     def start_ui_window(self):
         self.Window = PrintModifier(self)

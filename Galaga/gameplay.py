@@ -15,7 +15,7 @@ class Gameplay(MyThread):
         self.avatar2_lifes = 3
 
     def run(self):
-        print()
+        pass
 
     def count_killed_enemies(self):
         self.enemies_killed += 1
@@ -24,14 +24,16 @@ class Gameplay(MyThread):
 
     def player_hit(self, avatar):
         if avatar == 1:
-            if self.avatar1_lifes > 0:
+            if self.avatar1_lifes > 1:  # ako ima 1 smanjuje mu se na 0 i odmah je mrtav
                 self.avatar1_lifes -= 1
             else:
+                self.avatar1_lifes -= 1
                 self.player_killed_signal.emit(1)
         elif avatar == 2:
-            if self.avatar2_lifes > 0:
+            if self.avatar2_lifes > 1:
                 self.avatar2_lifes -= 1
             else:
+                self.avatar2_lifes -= 1
                 self.player_killed_signal.emit(2)
 
     def new_level(self):
@@ -41,12 +43,12 @@ class Gameplay(MyThread):
             if self.avatar1_lifes > 0:
                 self.avatar1_lifes = 3
             else:
-                print()  # UMRO JE I NE TREBA GA VRACATI
+                pass  # UMRO JE I NE TREBA GA VRACATI
 
             if self.avatar2_lifes > 0:
                 self.avatar2_lifes = 3
             else:
-                print()  # UMRO JE I NE TREBA GA VRACATI
+                pass  # UMRO JE I NE TREBA GA VRACATI
 
             self.next_level_signal.emit()
         else:
@@ -55,11 +57,11 @@ class Gameplay(MyThread):
             if self.avatar1_lifes > 0:
                 self.avatar1_lifes = 3
             else:
-                print()  # UMRO JE I NE TREBA GA VRACATI
+                pass  # UMRO JE I NE TREBA GA VRACATI
 
             if self.avatar2_lifes > 0:
                 self.avatar2_lifes = 3
             else:
-                print()  # UMRO JE I NE TREBA GA VRACATI
+                pass  # UMRO JE I NE TREBA GA VRACATI
 
             self.next_level_signal.emit()
