@@ -1,8 +1,5 @@
-from PyQt5.QtCore import QSize, Qt, QObject, pyqtSignal, pyqtSlot, QThread
-from PyQt5.QtWidgets import QWidget, QLabel
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtCore import QThread
 from threading import Lock
-import time, threading
 
 
 class MyThread(QThread):

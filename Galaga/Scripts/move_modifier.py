@@ -1,8 +1,6 @@
-from PyQt5.QtCore import QSize, Qt, QObject, pyqtSignal, pyqtSlot, QThread
-from PyQt5.QtWidgets import QWidget, QLabel
-from PyQt5.QtGui import QPixmap
-from threading import Lock
-import time, threading
+from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtWidgets import QLabel
+import time
 from Galaga.Scripts.my_thread import MyThread
 
 
@@ -12,10 +10,11 @@ class MoveModifer(MyThread):
     move_player_signal = pyqtSignal(int, int)
     move_enemy_signal = pyqtSignal(int, int)
 
-    def __init__(self, enemy_list, print_modifier):
+    def __init__(self, enemy_list, print_modifier, gameplay):
         super().__init__(parent=None)
         self.enemies = enemy_list
         self.printer = print_modifier
+        self.gameplay = gameplay
 
     def run(self):
         self.move_enemies(enemy_list=self.enemies)
@@ -34,6 +33,23 @@ class MoveModifer(MyThread):
                 if enemy_list[-1].x() >= 740:
                     direction = "left"
             time.sleep(0.5)
+            if len(enemy_list) > 0:
+                # print(self.gameplay.enemy_speed)
+                if direction == "left":
+                    for i in range(30):
+                        self.move_enemy_signal.emit(i, enemy_list[i].x() - 10)
+                    if enemy_list[0].x() <= 10:
+                        direction = "right"
+                elif direction == "right":
+                    for i in range(30):
+                        self.move_enemy_signal.emit(i, enemy_list[i].x() + 10)
+                    if enemy_list[29].x() >= 740:
+                        direction = "left"
+                time.sleep(self.gameplay.enemy_speed)
+            else:
+                self.move_enemies(enemy_list=self.enemies)
+    #enemies se ne pomeraju kada predje u novi nivo
+    #ubrzaju se i prikazu ali se ne krecu
 
     def move_player(self, key):
 
