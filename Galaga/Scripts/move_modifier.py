@@ -32,22 +32,7 @@ class MoveModifer(MyThread):
                     self.move_enemy_signal.emit(i, enemy_list[i].x() + 10)
                 if enemy_list[-1].x() >= 740:
                     direction = "left"
-            time.sleep(0.5)
-            if len(enemy_list) > 0:
-                # print(self.gameplay.enemy_speed)
-                if direction == "left":
-                    for i in range(30):
-                        self.move_enemy_signal.emit(i, enemy_list[i].x() - 10)
-                    if enemy_list[0].x() <= 10:
-                        direction = "right"
-                elif direction == "right":
-                    for i in range(30):
-                        self.move_enemy_signal.emit(i, enemy_list[i].x() + 10)
-                    if enemy_list[29].x() >= 740:
-                        direction = "left"
-                time.sleep(self.gameplay.enemy_speed)
-            else:
-                self.move_enemies(enemy_list=self.enemies)
+            time.sleep(self.gameplay.enemy_speed)
     #enemies se ne pomeraju kada predje u novi nivo
     #ubrzaju se i prikazu ali se ne krecu
 

@@ -8,6 +8,9 @@ class PrintModifier(QWidget, MyThread):
 
     move_p = pyqtSignal(QLabel)
     move_enemy_p = pyqtSignal(QLabel)
+    count_enemy_signal = pyqtSignal()
+    remove_enemy_projectile_signal = pyqtSignal()
+    remove_player_projectile_signal = pyqtSignal()
 
     def __init__(self, parent=None):
         super(PrintModifier, self).__init__(parent)
@@ -93,9 +96,12 @@ class PrintModifier(QWidget, MyThread):
         enemy.move(enemy.x() + coord_x, enemy.y() + coord_y)
         self.mutex.release()
 
-    @pyqtSlot(int)
-    def return_enemy(self, enemy_index):
+    @pyqtSlot(int, bool)
+    def return_enemy(self, enemy_index, destroyed):
         self.mutex.acquire()
+        if destroyed:
+            self.local_enemy_list[enemy_index].hide()
+            self.count_enemy_signal.emit()
         if enemy_index == 0 or enemy_index == 1 or enemy_index == 2:
             neighbour = self.local_enemy_list[enemy_index + 3]
             enemy = self.local_enemy_list[enemy_index]
@@ -111,8 +117,8 @@ class PrintModifier(QWidget, MyThread):
         enemy = self.local_enemy_list[enemy_index]
         if enemy.isVisible():
             self.mutex.acquire()
-            pew = QPixmap("img/enemy_projectile.png")
-            pew = pew.scaled(10, 10)
+            pew = QPixmap("img/new_enemy_projectile.png")
+            pew = pew.scaled(20, 20)
             self.projectile_label = QLabel(self)
             self.projectile_label.setPixmap(pew)
             self.projectile_label.move(enemy.x() + 20, enemy.y() + 20)
@@ -129,12 +135,12 @@ class PrintModifier(QWidget, MyThread):
 
     @pyqtSlot()
     def new_level(self):
-        # TODO Wait for all projectiles to be removed before new level
-        """print(len(self.projectile_list))
-        while len(self.projectile_list) > 0:
-            time.sleep(0.5)
-            pass"""
-        self.print_enemies()
+        self.remove_enemy_projectile_signal.emit()
+        self.remove_player_projectile_signal.emit()
+        for bullet in self.projectile_list:
+            bullet.hide()
+        for enemy in self.local_enemy_list:
+            enemy.show()
 
     @pyqtSlot(int)
     def remove_player(self, index):
@@ -145,4 +151,15 @@ class PrintModifier(QWidget, MyThread):
 
     @pyqtSlot(QLabel)
     def remove_projectile(self, projectile):
+        self.mutex.acquire()
+        projectile.hide()
         self.projectile_list.remove(projectile)
+        self.mutex.release()
+
+    @pyqtSlot(QLabel)
+    def remove_enemy(self, enemy):
+        self.mutex.acquire()
+        enemy.hide()
+        self.count_enemy_signal.emit()
+        self.mutex.release()
+

@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from Galaga.Scripts.my_thread import MyThread
 
 
@@ -13,32 +13,51 @@ class Gameplay(MyThread):
         self.enemies_killed = 0
         self.avatar1_lifes = 3
         self.avatar2_lifes = 3
+        self.level = 1
 
     def run(self):
         pass
 
+    @pyqtSlot()
     def count_killed_enemies(self):
+        self.gameplay_lock.acquire()
         self.enemies_killed += 1
+        print("enemies killed => {}".format(self.enemies_killed))
+        self.gameplay_lock.release()
         if self.enemies_killed == 30:
             self.new_level()
 
+    @pyqtSlot(int)
     def player_hit(self, avatar):
         if avatar == 1:
             if self.avatar1_lifes > 1:  # ako ima 1 smanjuje mu se na 0 i odmah je mrtav
+                self.gameplay_lock.acquire()
                 self.avatar1_lifes -= 1
+                print('player1 lifes: {}'.format(self.avatar1_lifes))
+                self.gameplay_lock.release()
             else:
+                self.gameplay_lock.acquire()
                 self.avatar1_lifes -= 1
                 self.player_killed_signal.emit(1)
+                self.gameplay_lock.release()
         elif avatar == 2:
             if self.avatar2_lifes > 1:
+                self.gameplay_lock.acquire()
                 self.avatar2_lifes -= 1
+                print('player2 lifes: {}'.format(self.avatar2_lifes))
+                self.gameplay_lock.release()
             else:
+                self.gameplay_lock.acquire()
                 self.avatar2_lifes -= 1
                 self.player_killed_signal.emit(2)
+                self.gameplay_lock.release()
 
     def new_level(self):
-        if self.enemy_speed > 0:
-            self.enemy_speed -= 0.025
+        if self.enemy_speed > 0.06:
+            self.gameplay_lock.acquire()
+            self.enemy_speed -= 0.05
+            self.level += 1
+            print('level:{} speed => {}'.format(self.level, self.enemy_speed))
             self.enemies_killed = 0
             if self.avatar1_lifes > 0:
                 self.avatar1_lifes = 3
@@ -51,8 +70,12 @@ class Gameplay(MyThread):
                 pass  # UMRO JE I NE TREBA GA VRACATI
 
             self.next_level_signal.emit()
+            self.gameplay_lock.release()
         else:
-            self.enemy_speed = 0
+            self.gameplay_lock.acquire()
+            self.enemy_speed = 0.05
+            self.level += 1
+            print('level:{} speed => {}'.format(self.level, self.enemy_speed))
             self.enemies_killed = 0
             if self.avatar1_lifes > 0:
                 self.avatar1_lifes = 3
@@ -65,3 +88,4 @@ class Gameplay(MyThread):
                 pass  # UMRO JE I NE TREBA GA VRACATI
 
             self.next_level_signal.emit()
+            self.gameplay_lock.release()

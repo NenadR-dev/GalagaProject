@@ -6,7 +6,8 @@ from Galaga.Scripts.my_thread import MyThread
 class EnemyMoveAttack(MyThread):
 
     enemy_attack_move_signal = pyqtSignal(int, int, int)
-    return_enemy_signal = pyqtSignal(int)
+    return_enemy_signal = pyqtSignal(int, bool)
+    player_hit_singal = pyqtSignal(int)
 
     def __init__(self, enemy_list, avatar1, avatar2, gameplay):
         super().__init__(parent=None)
@@ -19,12 +20,11 @@ class EnemyMoveAttack(MyThread):
         self.enemy_clock()
 
     def kill_avatar_success(self, avatar_index, enemy_index):
-        self.gameplay.player_hit(avatar_index)
-        self.enemies[enemy_index].hide()
-        self.return_enemy_signal.emit(enemy_index)
+        self.player_hit_singal.emit(avatar_index)
+        self.return_enemy_signal.emit(enemy_index, True)
 
     def kill_avatar_fail(self, enemy_index):
-        self.return_enemy_signal.emit(enemy_index)
+        self.return_enemy_signal.emit(enemy_index, False)
 
     def start_enemy_attack(self):
         enemy_index = random.randint(0, len(self.enemies))
@@ -83,9 +83,9 @@ class EnemyProjectileAttack(MyThread):
         self.enemy_attack_projectile_signal.emit(enemy_index)
 
     def enemy_clock(self):
-        time.sleep(3)
+        time.sleep(1)
         while True:
-            time_delay = random.randrange(4, 7)
+            time_delay = random.randrange(1, 2)
             time.sleep(time_delay)
             if self.avatar1.isVisible() or self.avatar2.isVisible():
                 self.start_enemy_attack()

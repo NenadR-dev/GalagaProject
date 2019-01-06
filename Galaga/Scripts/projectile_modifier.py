@@ -8,6 +8,7 @@ class ProjectileModifier(MyThread):
 
     projectile_move_signal = pyqtSignal(QLabel, int)
     projectile_remove_signal = pyqtSignal(QLabel)
+    enemy_killed_signal = pyqtSignal(QLabel)
 
     def __init__(self, enemy_list, print_modifier, gameplay):
         super().__init__(parent=None)
@@ -24,13 +25,8 @@ class ProjectileModifier(MyThread):
             if len(projectile_list) > 0:
                 for projectile in projectile_list:
                     if projectile.y() <= 0:
-                        self.mutex.acquire()
-                        projectile.hide()
-                        # ^  mozda bi ipak trebalo sa ostalim iscrtavanjem
-                        # |  ali ovde radi + ne puca
                         self.projectile_remove_signal.emit(projectile)
                         projectile_list.remove(projectile)
-                        self.mutex.release()
                     else:
                         self.projectile_move_signal.emit(projectile, projectile.y() - 5)
                         self.check_collision(projectile_list, projectile)
@@ -42,13 +38,9 @@ class ProjectileModifier(MyThread):
             for enemy in reversed(self.enemies):
                 if enemy.isVisible() and projectile.y() <= enemy.y():
                     if enemy.x() <= projectile.x() <= enemy.x() + 50:
-                        self.mutex.acquire()
-                        projectile.hide()
                         projectile_list.remove(projectile)
-                        enemy.hide()
                         self.projectile_remove_signal.emit(projectile)
-                        self.gameplay.count_killed_enemies()
-                        self.mutex.release()
+                        self.enemy_killed_signal.emit(enemy)
                         break
 
     @pyqtSlot(QLabel)
@@ -57,9 +49,18 @@ class ProjectileModifier(MyThread):
         self.projectiles.append(projectile)
         self.projectile_mutex.release()
 
+    @pyqtSlot()
+    def remove_projectiles(self):
+        self.projectile_mutex.acquire()
+        for p in self.projectiles:
+            self.projectiles.remove(p)
+        self.projectile_mutex.release()
+
 class EnemyProjectileModifier(MyThread):
 
     projectile_move_signal = pyqtSignal(QLabel, int)
+    projectile_remove_signal = pyqtSignal(QLabel)
+    player_hit_signal = pyqtSignal(int)
 
     def __init__(self, avatar1, avatar2, print_modifier, gameplay):
         super().__init__(parent=None)
@@ -76,12 +77,8 @@ class EnemyProjectileModifier(MyThread):
             if len(projectile_list) > 0:
                 for projectile in projectile_list:
                     if projectile.y() >= 600:
-                        self.mutex.acquire()
-                        projectile.hide()
-                        # ^  mozda bi ipak trebalo sa ostalim iscrtavanjem
-                        # |  ali ovde radi + ne puca
                         projectile_list.remove(projectile)
-                        self.mutex.release()
+                        self.projectile_remove_signal.emit(projectile)
                     else:
                         self.projectile_move_signal.emit(projectile, projectile.y() + 5)
                         self.check_collision(projectile_list, projectile)
@@ -95,15 +92,20 @@ class EnemyProjectileModifier(MyThread):
                 index -= 1
                 if enemy.isVisible() and projectile.y() >= enemy.y():
                     if enemy.x() <= projectile.x() <= enemy.x() + 50:
-                        self.mutex.acquire()
-                        projectile.hide()
                         projectile_list.remove(projectile)
-                        self.gameplay.player_hit(index)
-                        self.mutex.release()
+                        self.projectile_remove_signal.emit(projectile)
+                        self.player_hit_signal.emit(index)
                         break
 
     @pyqtSlot(QLabel)
     def add_projectile(self, projectile):
         self.projectile_mutex.acquire()
         self.projectiles.append(projectile)
+        self.projectile_mutex.release()
+
+    @pyqtSlot()
+    def remove_projectiles(self):
+        self.projectile_mutex.acquire()
+        for p in self.projectiles:
+            self.projectiles.remove(p)
         self.projectile_mutex.release()
