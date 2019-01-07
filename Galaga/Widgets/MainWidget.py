@@ -3,7 +3,8 @@ from PyQt5.QtCore import QSize
 from PyQt5.QtGui import QMovie, QPainter, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton
 
-class UIWindow(QWidget):
+
+class UIWindow(QMainWindow):
     def __init__(self, parent=None):
         super(UIWindow, self).__init__(parent)
         self.resize(QSize(800, 600))
