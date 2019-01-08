@@ -23,7 +23,7 @@ class MainWindow(QMainWindow):
     def startUIWindow(self):
         self.Window = UIWindow(self)
         self.setWindowTitle("PyGalaga")
-        self.setWindowIcon(QIcon("img/avatar.png"))
+        self.setWindowIcon(QIcon("img/avatar1.png"))
         self.btnsingleplayer = QPushButton('Single Player', self)
         self.btnsingleplayer.move(350, 100)
 

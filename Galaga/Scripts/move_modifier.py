@@ -7,7 +7,7 @@ from Galaga.Scripts.my_thread import MyThread
 class MoveModifer(MyThread):
 
     create_projectile_signal = pyqtSignal(QLabel)
-    move_player_signal = pyqtSignal(int, int)
+    move_player_signal = pyqtSignal(QLabel, int)
     move_enemy_signal = pyqtSignal(int, int)
 
     def __init__(self, enemy_list, print_modifier, gameplay):
@@ -33,8 +33,6 @@ class MoveModifer(MyThread):
                 if enemy_list[-1].x() >= 740:
                     direction = "left"
             time.sleep(self.gameplay.enemy_speed)
-    #enemies se ne pomeraju kada predje u novi nivo
-    #ubrzaju se i prikazu ali se ne krecu
 
     def move_player(self, key):
 
@@ -43,19 +41,19 @@ class MoveModifer(MyThread):
 
         if key == Qt.Key_Left:
             if avatar1.x() > 10:
-                self.move_player_signal.emit(1, avatar1.x() - 10)
+                self.move_player_signal.emit(avatar1, avatar1.x() - 10)
 
         elif key == Qt.Key_Right:
             if avatar1.x() < 740:
-                self.move_player_signal.emit(1, avatar1.x() + 10)
+                self.move_player_signal.emit(avatar1, avatar1.x() + 10)
 
         elif key == Qt.Key_A:
             if avatar2.x() > 10:
-                self.move_player_signal.emit(2, avatar2.x() - 10)
+                self.move_player_signal.emit(avatar2, avatar2.x() - 10)
 
         elif key == Qt.Key_D:
             if avatar2.x() < 740:
-                self.move_player_signal.emit(2, avatar2.x() + 10)
+                self.move_player_signal.emit(avatar2, avatar2.x() + 10)
 
         elif key == Qt.Key_Up:
             self.create_projectile_signal.emit(avatar1)

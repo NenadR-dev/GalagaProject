@@ -47,7 +47,7 @@ class Ui_Form(QMainWindow):
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Galaga"))
-        Form.setWindowIcon(QIcon("img/avatar.png"))
+        Form.setWindowIcon(QIcon("img/avatar1.png"))
         self.SinglePlayerBtn.setText(_translate("Form", "Single Player"))
         self.SinglePlayerBtn.clicked.connect(self.single_player_btn_press)
 

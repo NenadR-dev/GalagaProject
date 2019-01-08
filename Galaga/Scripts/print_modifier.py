@@ -2,6 +2,7 @@ from PyQt5.QtCore import QSize, pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QPixmap
 from Galaga.Scripts.my_thread import MyThread
+from Galaga.Scripts.avatar import Avatar
 
 
 class PrintModifier(QWidget, MyThread):
@@ -15,16 +16,15 @@ class PrintModifier(QWidget, MyThread):
     def __init__(self, parent=None):
         super(PrintModifier, self).__init__(parent)
         self.local_enemy_list = []
-        self.label_avatar1 = QLabel(self)
-        self.label_avatar2 = QLabel(self)
+        self.label_avatar1 = Avatar(self)
+        self.label_avatar2 = Avatar(self)
         self.resize(QSize(800, 600))
         self.projectile_list = []
         self.print_enemies()
-        self.print_player()
 
     def print_enemies(self):
         if len(self.local_enemy_list) > 0:
-            self.local_enemy_list.clear() # Ubijeni vanzemaljci su samo sakriveni
+            self.local_enemy_list.clear()     # Ubijeni vanzemaljci su samo sakriveni
         for i in range(0, 10):
             for j in range(0, 3):
                 self.mutex.acquire()
@@ -36,21 +36,6 @@ class PrintModifier(QWidget, MyThread):
                 label_enemy.show()
                 self.local_enemy_list.append(label_enemy)
                 self.mutex.release()
-
-    def print_player(self):
-        self.mutex.acquire()
-        avatar1 = QPixmap("img/avatar.png")
-        avatar1 = avatar1.scaled(50, 50)
-        self.label_avatar1.setPixmap(avatar1)
-        self.label_avatar1.move(10, 540)
-        self.label_avatar1.show()
-
-        avatar2 = QPixmap("img/avatar2.png")
-        avatar2 = avatar2.scaled(50, 50)
-        self.label_avatar2.setPixmap(avatar2)
-        self.label_avatar2.move(740, 540)
-        self.label_avatar2.show()
-        self.mutex.release()
 
     @pyqtSlot(QLabel)
     def print_projectile(self, avatar):
@@ -64,17 +49,6 @@ class PrintModifier(QWidget, MyThread):
             self.projectile_label.show()
             self.projectile_list.append(self.projectile_label)
             self.move_p.emit(self.projectile_label)
-            self.mutex.release()
-
-    @pyqtSlot(int, int)
-    def move_player(self, player, i):
-        if player == 1:
-            self.mutex.acquire()
-            self.label_avatar1.move(i, self.label_avatar1.y())
-            self.mutex.release()
-        elif player == 2:
-            self.mutex.acquire()
-            self.label_avatar2.move(i, self.label_avatar2.y())
             self.mutex.release()
 
     @pyqtSlot(int, int)
@@ -94,6 +68,12 @@ class PrintModifier(QWidget, MyThread):
         self.mutex.acquire()
         enemy = self.local_enemy_list[enemy_index]
         enemy.move(enemy.x() + coord_x, enemy.y() + coord_y)
+        self.mutex.release()
+
+    @pyqtSlot(QLabel, int)
+    def move_player(self, player, i):
+        self.mutex.acquire()
+        player.move(i, player.y())
         self.mutex.release()
 
     @pyqtSlot(int, bool)
@@ -143,11 +123,10 @@ class PrintModifier(QWidget, MyThread):
             enemy.show()
 
     @pyqtSlot(int)
-    def remove_player(self, index):
-        if index == 1:
-            self.label_avatar1.hide()
-        elif index == 2:
-            self.label_avatar2.hide()
+    def remove_player(self, player):
+        self.mutex.acquire()
+        player.hide()                   #TODO srediti da signali salju koji je player pogodjen
+        self.mutex.release()
 
     @pyqtSlot(QLabel)
     def remove_projectile(self, projectile):
