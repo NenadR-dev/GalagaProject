@@ -10,12 +10,11 @@ class MoveModifer(MyThread):
     move_player_signal = pyqtSignal(QLabel, int)
     move_enemy_signal = pyqtSignal(int, int)
 
-    def __init__(self, enemy_list, print_modifier, gameplay, multi):
+    def __init__(self, enemy_list, print_modifier, gameplay):
         super().__init__(parent=None)
         self.enemies = enemy_list
         self.printer = print_modifier
         self.gameplay = gameplay
-        self.multiplayer = multi
 
     def run(self):
         self.move_enemies(enemy_list=self.enemies)
@@ -42,28 +41,15 @@ class MoveModifer(MyThread):
 
         if key == Qt.Key_Left:
             if avatar1.x() > 10:
-<<<<<<< HEAD
                 self.move_player_signal.emit(avatar1, avatar1.x() - 10)
 
         elif key == Qt.Key_Right:
             if avatar1.x() < 740:
                 self.move_player_signal.emit(avatar1, avatar1.x() + 10)
-=======
-                self.move_player_signal.emit(1, avatar1.x() - 10)
-                if self.multiplayer:
-                    send("left")
-
-        elif key == Qt.Key_Right:
-            if avatar1.x() < 740:
-                self.move_player_signal.emit(1, avatar1.x() + 10)
-                if self.multiplayer:
-                    send("right")
->>>>>>> 2a4aed4e117a85c15de011e17aee8e83b0b2358b
 
         elif key == Qt.Key_A:
             if avatar2.x() > 10:
                 self.move_player_signal.emit(avatar2, avatar2.x() - 10)
-
 
         elif key == Qt.Key_D:
             if avatar2.x() < 740:
@@ -71,8 +57,6 @@ class MoveModifer(MyThread):
 
         elif key == Qt.Key_Up:
             self.create_projectile_signal.emit(avatar1)
-            if self.multiplayer:
-                send("up")
 
         elif key == Qt.Key_W:
             self.create_projectile_signal.emit(avatar2)
