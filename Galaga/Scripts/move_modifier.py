@@ -2,7 +2,7 @@ from PyQt5.QtCore import Qt, pyqtSignal
 from PyQt5.QtWidgets import QLabel
 import time
 from Galaga.Scripts.my_thread import MyThread
-
+from Galaga.Sockets.socket_send import *
 
 class MoveModifer(MyThread):
 
@@ -10,11 +10,12 @@ class MoveModifer(MyThread):
     move_player_signal = pyqtSignal(int, int)
     move_enemy_signal = pyqtSignal(int, int)
 
-    def __init__(self, enemy_list, print_modifier, gameplay):
+    def __init__(self, enemy_list, print_modifier, gameplay, multi):
         super().__init__(parent=None)
         self.enemies = enemy_list
         self.printer = print_modifier
         self.gameplay = gameplay
+        self.multiplayer = multi
 
     def run(self):
         self.move_enemies(enemy_list=self.enemies)
@@ -44,14 +45,19 @@ class MoveModifer(MyThread):
         if key == Qt.Key_Left:
             if avatar1.x() > 10:
                 self.move_player_signal.emit(1, avatar1.x() - 10)
+                if self.multiplayer:
+                    send("left")
 
         elif key == Qt.Key_Right:
             if avatar1.x() < 740:
                 self.move_player_signal.emit(1, avatar1.x() + 10)
+                if self.multiplayer:
+                    send("right")
 
         elif key == Qt.Key_A:
             if avatar2.x() > 10:
                 self.move_player_signal.emit(2, avatar2.x() - 10)
+
 
         elif key == Qt.Key_D:
             if avatar2.x() < 740:
@@ -59,6 +65,8 @@ class MoveModifer(MyThread):
 
         elif key == Qt.Key_Up:
             self.create_projectile_signal.emit(avatar1)
+            if self.multiplayer:
+                send("up")
 
         elif key == Qt.Key_W:
             self.create_projectile_signal.emit(avatar2)
