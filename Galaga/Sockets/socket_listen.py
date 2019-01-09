@@ -31,11 +31,8 @@ class Socket_Listen(QThread):
                     if len(text) > 0:
                         if text == 'left':
                             self.move_player_signal.emit(Qt.Key_A)
-                            print(text)
                         if text == 'right':
                             self.move_player_signal.emit(Qt.Key_D)
-                            print(text)
                         if text == 'up':
                             self.move_player_signal.emit(Qt.Key_W)
-                            print(text)
                         text = ''

@@ -4,13 +4,13 @@ from PyQt5.QtGui import QMovie, QPainter, QIcon
 from PyQt5.QtWidgets import QApplication, QMainWindow, QWidget, QPushButton
 
 
-class UIWindow(QMainWindow):
+class UIWindow(QWidget):
     def __init__(self, parent=None):
         super(UIWindow, self).__init__(parent)
         self.resize(QSize(800, 600))
 
 
-class MainWindow(QMainWindow):
+class MainWindow(QWidget):
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
         self.setGeometry(50, 50, 800, 600)
