@@ -64,9 +64,10 @@ class MainWindow(QWidget):
         self.movement.daemon = True
         self.movement.start()
 
-        #self.socket = socket_listen.Socket_Listen(self.movement)
-        #self.socket.daemon = True
-        #self.socket.run()
+        self.socket = socket_listen.Socket_Listen()
+        #self.socket.move_player_signal.connect(self.movement.move_player)
+        self.socket.daemon = True
+        self.socket.start()
 
         #TODO STEFANJE NE RADI TI KAKO TREBA ENEMY ATTACK TU NEGDE PUCA
 

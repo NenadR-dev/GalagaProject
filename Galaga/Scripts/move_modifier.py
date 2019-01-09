@@ -1,4 +1,4 @@
-from PyQt5.QtCore import Qt, pyqtSignal, QThread
+from PyQt5.QtCore import Qt, pyqtSignal, QThread, pyqtSlot
 from PyQt5.QtWidgets import QLabel
 import time
 from Galaga.Scripts.my_thread import MyThread

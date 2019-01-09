@@ -2,15 +2,17 @@
 import socket
 from Galaga.Scripts.my_thread import MyThread
 from PyQt5.QtCore import QThread, QObject, pyqtSignal, pyqtSlot, Qt
+import time
 
-class Socket_Listen(MyThread):
+
+class Socket_Listen(QThread):
 
     HOST = ''  # Symbolic name meaning all available interfaces
     PORT = 50005  # Arbitrary non-privileged port
     move_player_signal = pyqtSignal()
-    def __init__(self, move_modifier):
+
+    def __init__(self):
         super().__init__()
-        self.move = move_modifier
 
     def run(self):
         self.listen()
@@ -18,18 +20,22 @@ class Socket_Listen(MyThread):
     def listen(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.HOST, self.PORT))
-            s.listen(1)
+            s.listen(5)
             conn, addr = s.accept()
             with conn:
                 print('Connected by', addr)
                 text = ''
+                time.sleep(0.1)
                 while True:
                     bin = conn.recv(1024)
-                    text += str(bin, 'utf8')
+                    text = str(bin, 'utf8')
                     if len(text) > 0:
                         if text == 'left':
-                            self.move.move_player(Qt.Key_A)
+                            #self.move_player_signal.emit(Qt.Key_A)
+                            print(text)
                         if text == 'right':
-                            self.move.move_player(Qt.Key_D)
+                            #self.move_player_signal.emit(Qt.Key_D)
+                            print(text)
                         if text == 'up':
-                            self.move.move_player(Qt.Key_W)
+                            #self.move_player_signal.emit(Qt.Key_W)
+                            print(text)
