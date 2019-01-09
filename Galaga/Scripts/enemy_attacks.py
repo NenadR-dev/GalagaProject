@@ -1,16 +1,16 @@
-from PyQt5.QtCore import pyqtSignal
+from PyQt5.QtCore import pyqtSignal, QThread
 import time, random
 from Galaga.Scripts.my_thread import MyThread
 
 
-class EnemyMoveAttack(MyThread):
+class EnemyMoveAttack(QThread):
 
     enemy_attack_move_signal = pyqtSignal(int, int, int)
     return_enemy_signal = pyqtSignal(int, bool)
     player_hit_singal = pyqtSignal(int)
 
-    def __init__(self, enemy_list, avatar1, avatar2, gameplay):
-        super().__init__(parent=None)
+    def __init__(self, enemy_list, avatar1, avatar2, gameplay, parent=None):
+        QThread.__init__(self, parent)
         self.enemies = enemy_list
         self.avatar1 = avatar1
         self.avatar2 = avatar2
@@ -27,7 +27,7 @@ class EnemyMoveAttack(MyThread):
         self.return_enemy_signal.emit(enemy_index, False)
 
     def start_enemy_attack(self):
-        enemy_index = random.randint(0, len(self.enemies))
+        enemy_index = random.randint(0, len(self.enemies) - 1)
         avatar = self.avatar1
         if self.avatar1.isVisible():
             avatar = self.avatar1
@@ -65,7 +65,7 @@ class EnemyMoveAttack(MyThread):
                 self.start_enemy_attack()
 
 
-class EnemyProjectileAttack(MyThread):
+class EnemyProjectileAttack(QThread):
 
     enemy_attack_projectile_signal = pyqtSignal(int)
 
@@ -79,7 +79,7 @@ class EnemyProjectileAttack(MyThread):
         self.enemy_clock()
 
     def start_enemy_attack(self):
-        enemy_index = random.randint(0, len(self.enemies))
+        enemy_index = random.randint(0, len(self.enemies) - 1)
         self.enemy_attack_projectile_signal.emit(enemy_index)
 
     def enemy_clock(self):

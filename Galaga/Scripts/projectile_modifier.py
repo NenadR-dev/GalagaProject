@@ -1,17 +1,17 @@
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThread
 from PyQt5.QtWidgets import QLabel
 from Galaga.Scripts.my_thread import MyThread
 import time
 
 
-class ProjectileModifier(MyThread):
+class ProjectileModifier(QThread):
 
     projectile_move_signal = pyqtSignal(QLabel, int)
     projectile_remove_signal = pyqtSignal(QLabel)
     enemy_killed_signal = pyqtSignal(QLabel)
 
-    def __init__(self, enemy_list, print_modifier, gameplay):
-        super().__init__(parent=None)
+    def __init__(self, enemy_list, print_modifier, gameplay, parent=None):
+        QThread.__init__(self, parent)
         self.enemies = enemy_list
         self.printer = print_modifier
         self.projectiles = []
@@ -45,18 +45,18 @@ class ProjectileModifier(MyThread):
 
     @pyqtSlot(QLabel)
     def add_projectile(self, projectile):
-        self.projectile_mutex.acquire()
+        MyThread.projectile_mutex.acquire()
         self.projectiles.append(projectile)
-        self.projectile_mutex.release()
+        MyThread.projectile_mutex.release()
 
     @pyqtSlot()
     def remove_projectiles(self):
-        self.projectile_mutex.acquire()
+        MyThread.projectile_mutex.acquire()
         for p in self.projectiles:
             self.projectiles.remove(p)
-        self.projectile_mutex.release()
+        MyThread.projectile_mutex.release()
 
-class EnemyProjectileModifier(MyThread):
+class EnemyProjectileModifier(QThread):
 
     projectile_move_signal = pyqtSignal(QLabel, int)
     projectile_remove_signal = pyqtSignal(QLabel)
@@ -99,13 +99,13 @@ class EnemyProjectileModifier(MyThread):
 
     @pyqtSlot(QLabel)
     def add_projectile(self, projectile):
-        self.projectile_mutex.acquire()
+        MyThread.projectile_mutex.acquire()
         self.projectiles.append(projectile)
-        self.projectile_mutex.release()
+        MyThread.projectile_mutex.release()
 
     @pyqtSlot()
     def remove_projectiles(self):
-        self.projectile_mutex.acquire()
+        MyThread.projectile_mutex.acquire()
         for p in self.projectiles:
             self.projectiles.remove(p)
-        self.projectile_mutex.release()
+        MyThread.projectile_mutex.release()

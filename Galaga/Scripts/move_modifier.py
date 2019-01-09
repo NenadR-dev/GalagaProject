@@ -1,17 +1,17 @@
-from PyQt5.QtCore import Qt, pyqtSignal
+from PyQt5.QtCore import Qt, pyqtSignal, QThread
 from PyQt5.QtWidgets import QLabel
 import time
 from Galaga.Scripts.my_thread import MyThread
 from Galaga.Sockets.socket_send import *
 
-class MoveModifer(MyThread):
+class MoveModifer(QThread):
 
     create_projectile_signal = pyqtSignal(QLabel)
     move_player_signal = pyqtSignal(QLabel, int)
     move_enemy_signal = pyqtSignal(int, int)
 
-    def __init__(self, enemy_list, print_modifier, gameplay):
-        super().__init__(parent=None)
+    def __init__(self, enemy_list, print_modifier, gameplay, parent=None):
+        QThread.__init__(self, parent)
         self.enemies = enemy_list
         self.printer = print_modifier
         self.gameplay = gameplay
