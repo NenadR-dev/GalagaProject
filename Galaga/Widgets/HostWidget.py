@@ -1,17 +1,22 @@
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QWidget, QMainWindow
-from PyQt5.QtGui import QMovie, QImage, QPalette, QBrush, QIcon
-from PyQt5.QtCore import QSize
-from Galaga.Widgets import GameWidget
-from Galaga import menu_design
-
+from PyQt5.QtWidgets import QMainWindow
+from PyQt5.QtGui import QImage, QPalette, QBrush, QIcon
+from PyQt5.QtCore import QSize, pyqtSlot
+from Galaga.MultiPlayer.Sockets import tcp_send, tcp_listen
 
 class Ui_Form(QMainWindow):
 
     def __init__(self):
         super().__init__()
         self.window = self.setupUi(self)
+        self.init_thread()
         self.show()
+
+    def init_thread(self):
+        self.tcp_listen = tcp_listen.TcpListen()
+        self.tcp_listen.update_client_num_signal.connect(self.update_connections)
+        self.tcp_listen.daemon = True
+        self.tcp_listen.start()
 
     def setupUi(self, Form):
         Form.setObjectName("Form")
@@ -45,7 +50,6 @@ class Ui_Form(QMainWindow):
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
 
-
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
         Form.setWindowTitle(_translate("Form", "Galaga"))
@@ -56,6 +60,12 @@ class Ui_Form(QMainWindow):
 
     def startBtn_press(self):
         pass
+
+    @pyqtSlot(int)
+    def update_connections(self, num):
+        print(num)
+        self.label2.setText('{}'.format(num))
+
 
 
 

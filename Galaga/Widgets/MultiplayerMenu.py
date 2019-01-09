@@ -1,9 +1,10 @@
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QWidget, QMainWindow, QInputDialog, QLineEdit
-from PyQt5.QtGui import QMovie, QImage, QPalette, QBrush, QIcon
+from PyQt5.QtWidgets import QMainWindow, QInputDialog, QLineEdit
+from PyQt5.QtGui import QImage, QPalette, QBrush, QIcon
 from PyQt5.QtCore import QSize
-from Galaga.Widgets import HostWidget, GameWidget
+from Galaga.Widgets import HostWidget
 from Galaga import menu_design
+from Galaga.MultiPlayer.Sockets import tcp_listen, tcp_send
 
 
 class Ui_Form(QMainWindow):
@@ -85,5 +86,8 @@ class Ui_Form(QMainWindow):
     def get_host_ip(self):
         text, okPressed = QInputDialog.getText(self, "Insert Host IP", "IP:", QLineEdit.Normal, "")
         if okPressed and text != '':
+            bytes_sent = tcp_send.TcpSend('127.0.0.1', 80050).send_msg(text)
+            if bytes_sent > 0:
+                self.waiting.setText(QtCore.QCoreApplication.translate("Form", "Connected"))
             print(text)
 
