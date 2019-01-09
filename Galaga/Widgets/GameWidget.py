@@ -75,6 +75,7 @@ class MainWindow(QWidget):
                                               self.Window.label_avatar2, self.gameplay)
         self.enemy_move_attack.enemy_attack_move_signal.connect(self.Window.enemy_move_attack)
         self.enemy_move_attack.return_enemy_signal.connect(self.Window.return_enemy)
+        #self.gameplay.return_enemy_signal.connect(self.Window.return_enemy)                 #vrati enemy-ja pre next_level
         self.enemy_move_attack.player_hit_singal.connect(self.gameplay.player_hit)
         self.enemy_move_attack.daemon = True
         self.enemy_move_attack.start()
@@ -84,20 +85,6 @@ class MainWindow(QWidget):
         self.enemy_projectile_attack.enemy_attack_projectile_signal.connect(self.Window.enemy_projectile_attack)
         self.enemy_projectile_attack.daemon = True
         self.enemy_projectile_attack.start()
-
-        #self.enemy_move_attack = EnemyMoveAttack(self.Window.local_enemy_list, self.Window.label_avatar1,
-        #                                      self.Window.label_avatar2, self.gameplay)
-        #self.enemy_move_attack.enemy_attack_move_signal.connect(self.Window.enemy_move_attack)
-        #self.enemy_move_attack.return_enemy_signal.connect(self.Window.return_enemy)
-        #self.enemy_move_attack.player_hit_singal.connect(self.gameplay.player_hit)
-        #self.enemy_move_attack.daemon = True
-        #self.enemy_move_attack.start()
-
-        #self.enemy_projectile_attack = EnemyProjectileAttack(self.Window.local_enemy_list, self.Window.label_avatar1,
-        #                                         self.Window.label_avatar2)
-        #self.enemy_projectile_attack.enemy_attack_projectile_signal.connect(self.Window.enemy_projectile_attack)
-        #self.enemy_projectile_attack.daemon = True
-        #self.enemy_projectile_attack.start()
 
     def start_ui_window(self):
         self.Window = PrintModifier(self)

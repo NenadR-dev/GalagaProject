@@ -1,6 +1,6 @@
 import sys
 from PyQt5.QtWidgets import QApplication, QMainWindow, QLabel
-from Galaga.manudesign import Ui_Form
+from Galaga.menu_design import Ui_Form
 
 
 if __name__ == '__main__':
