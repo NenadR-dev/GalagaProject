@@ -10,6 +10,7 @@ class PrintModifier(QWidget):
     move_p = pyqtSignal(QLabel)
     move_enemy_p = pyqtSignal(QLabel)
     count_enemy_signal = pyqtSignal()
+    #return_enemy_signal = pyqtSignal(bool)
     remove_enemy_projectile_signal = pyqtSignal()
     remove_player_projectile_signal = pyqtSignal()
 
@@ -82,6 +83,8 @@ class PrintModifier(QWidget):
         if destroyed:
             self.local_enemy_list[enemy_index].hide()
             self.count_enemy_signal.emit()
+
+
         if enemy_index == 0 or enemy_index == 1 or enemy_index == 2:
             neighbour = self.local_enemy_list[enemy_index + 3]
             enemy = self.local_enemy_list[enemy_index]
@@ -117,16 +120,23 @@ class PrintModifier(QWidget):
     def new_level(self):
         self.remove_enemy_projectile_signal.emit()
         self.remove_player_projectile_signal.emit()
+        #self.return_enemy_signal.emit(False)            #TODO namestiti vracanje enemyja pre next_level-a
         for bullet in self.projectile_list:
             bullet.hide()
         for enemy in self.local_enemy_list:
             enemy.show()
 
     @pyqtSlot(int)
-    def remove_player(self, player):
-        MyThread.mutex.acquire()
-        player.hide()                   #TODO srediti da signali salju koji je player pogodjen
-        MyThread.mutex.release()
+    def remove_player(self, index):
+        if self.label_avatar1.index == index:
+            MyThread.mutex.acquire()
+            self.label_avatar1.hide()
+            MyThread.mutex.release()
+
+        elif self.label_avatar2.index == index:
+            MyThread.mutex.acquire()
+            self.label_avatar2.hide()
+            MyThread.mutex.release()
 
     @pyqtSlot(QLabel)
     def remove_projectile(self, projectile):

@@ -1,5 +1,6 @@
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThread
 from Galaga.Scripts.my_thread import MyThread
+from Galaga.Scripts.avatar import Avatar
 
 
 class Gameplay(QThread):
@@ -38,7 +39,7 @@ class Gameplay(QThread):
             else:
                 MyThread.gameplay_lock.acquire()
                 self.avatar1_lifes -= 1
-                self.player_killed_signal.emit(1)
+                self.player_killed_signal.emit(avatar)
                 MyThread.gameplay_lock.release()
         elif avatar == 2:
             if self.avatar2_lifes > 1:
@@ -49,7 +50,7 @@ class Gameplay(QThread):
             else:
                 MyThread.gameplay_lock.acquire()
                 self.avatar2_lifes -= 1
-                self.player_killed_signal.emit(2)
+                self.player_killed_signal.emit(avatar)
                 MyThread.gameplay_lock.release()
 
     def new_level(self):

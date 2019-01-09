@@ -15,6 +15,7 @@ class EnemyMoveAttack(QThread):
         self.avatar1 = avatar1
         self.avatar2 = avatar2
         self.gameplay = gameplay
+        self.can_move = False
 
     def run(self):
         self.enemy_clock()
