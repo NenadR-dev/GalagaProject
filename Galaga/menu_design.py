@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QWidget, QMainWindow
+from PyQt5.QtWidgets import QWidget, QMainWindow, QInputDialog, QLineEdit
 from PyQt5.QtGui import QMovie, QImage, QPalette, QBrush, QIcon
 from PyQt5.QtCore import QSize
 from Galaga.Widgets import GameWidget, MultiplayerMenu
@@ -67,6 +67,5 @@ class Ui_Form(QMainWindow):
     def multi_player_btn_press(self):
         self.window = MultiplayerMenu.Ui_Form()
         self.close()
-
 
 

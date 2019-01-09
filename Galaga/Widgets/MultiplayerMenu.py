@@ -1,5 +1,5 @@
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QWidget, QMainWindow
+from PyQt5.QtWidgets import QWidget, QMainWindow, QInputDialog, QLineEdit
 from PyQt5.QtGui import QMovie, QImage, QPalette, QBrush, QIcon
 from PyQt5.QtCore import QSize
 from Galaga.Widgets import GameWidget
@@ -36,6 +36,13 @@ class Ui_Form(QMainWindow):
         self.JoinBtn.setObjectName("JoinBtn")
         self.JoinBtn.setStyleSheet("background-color: #1e3962; color: white; font: italic; font-size: 30px;")
 
+        self.waiting = QtWidgets.QLabel(Form)
+        self.waiting.setGeometry(QtCore.QRect(200, 260, 331, 81))
+        self.waiting.setObjectName("waiting")
+        self.waiting.setStyleSheet("background-color: #1e3962; color: white; font: italic; font-size: 30px;")
+        self.waiting.hide()
+
+
         self.backBtn = QtWidgets.QPushButton(Form)
         self.backBtn.setGeometry(QtCore.QRect(200, 410, 331, 81))
         self.backBtn.setObjectName("backBtn")
@@ -55,6 +62,8 @@ class Ui_Form(QMainWindow):
         self.JoinBtn.setText(_translate("Form", "Join game"))
         self.JoinBtn.clicked.connect(self.join_btn_press)
 
+        self.waiting.setText(_translate("Form", "\tWaiting"))
+
         self.backBtn.setText(_translate("Form", "Back"))
         self.backBtn.clicked.connect(self.back_button_press)
 
@@ -66,7 +75,14 @@ class Ui_Form(QMainWindow):
         pass
 
     def join_btn_press(self):
-        pass
+        self.HostBtn.hide()
+        self.JoinBtn.hide()
+        self.backBtn.hide()
+        self.get_host_ip()
+        self.waiting.show()
 
-
+    def get_host_ip(self):
+        text, okPressed = QInputDialog.getText(self, "Insert Host IP", "IP:", QLineEdit.Normal, "")
+        if okPressed and text != '':
+            print(text)
 
