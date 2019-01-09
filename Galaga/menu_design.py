@@ -1,5 +1,3 @@
-<<<<<<< HEAD
-=======
 from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QWidget, QMainWindow
 from PyQt5.QtGui import QMovie, QImage, QPalette, QBrush, QIcon
@@ -70,6 +68,3 @@ class Ui_Form(QMainWindow):
         self.window = MultiplayerMenu.Ui_Form()
         self.close()
 
-
-
->>>>>>> 4d63875b644c7659f41382819f706601246c3403
