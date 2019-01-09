@@ -9,7 +9,7 @@ class Socket_Listen(QThread):
 
     HOST = ''  # Symbolic name meaning all available interfaces
     PORT = 50005  # Arbitrary non-privileged port
-    move_player_signal = pyqtSignal()
+    move_player_signal = pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
@@ -20,22 +20,22 @@ class Socket_Listen(QThread):
     def listen(self):
         with socket.socket(socket.AF_INET, socket.SOCK_STREAM) as s:
             s.bind((self.HOST, self.PORT))
-            s.listen(5)
+            s.listen(1)
             conn, addr = s.accept()
             with conn:
                 print('Connected by', addr)
                 text = ''
-                time.sleep(0.1)
                 while True:
                     bin = conn.recv(1024)
-                    text = str(bin, 'utf8')
+                    text += str(bin, 'utf8')
                     if len(text) > 0:
                         if text == 'left':
-                            #self.move_player_signal.emit(Qt.Key_A)
+                            self.move_player_signal.emit(Qt.Key_A)
                             print(text)
                         if text == 'right':
-                            #self.move_player_signal.emit(Qt.Key_D)
+                            self.move_player_signal.emit(Qt.Key_D)
                             print(text)
                         if text == 'up':
-                            #self.move_player_signal.emit(Qt.Key_W)
+                            self.move_player_signal.emit(Qt.Key_W)
                             print(text)
+                        text = ''

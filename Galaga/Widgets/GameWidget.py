@@ -8,10 +8,12 @@ from Galaga.gameplay import Gameplay
 from PyQt5.QtGui import QMovie, QPainter
 from PyQt5.QtWidgets import QWidget
 from Galaga.Sockets import socket_listen, socket_send
-
+from PyQt5.QtCore import Qt, pyqtSignal, QThread, pyqtSlot
 
 
 class MainWindow(QWidget):
+
+    move_player_signal = pyqtSignal(int)
 
     def __init__(self, parent=None):
         super(MainWindow, self).__init__(parent)
@@ -61,11 +63,12 @@ class MainWindow(QWidget):
         self.movement.create_projectile_signal.connect(self.Window.print_projectile)
         self.movement.move_player_signal.connect(self.Window.move_player)
         self.movement.move_enemy_signal.connect(self.Window.move_enemy)
+        self.move_player_signal.connect(self.movement.move_player)
         self.movement.daemon = True
         self.movement.start()
 
         self.socket = socket_listen.Socket_Listen()
-        #self.socket.move_player_signal.connect(self.movement.move_player)
+        self.socket.move_player_signal.connect(self.movement.move_player)
         self.socket.daemon = True
         self.socket.start()
 
@@ -109,5 +112,5 @@ class MainWindow(QWidget):
         self.key_notifier.rem_key(event.key())
 
     def __update_position__(self, key):
-        self.movement.move_player(key)
+        self.move_player_signal.emit(key)
 
