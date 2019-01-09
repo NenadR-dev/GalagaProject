@@ -39,7 +39,6 @@ class MoveModifer(QThread):
 
         avatar1 = self.printer.label_avatar1
         avatar2 = self.printer.label_avatar2
-        print('{}'.format(key))
         if key == Qt.Key_Left:
             if avatar1.x() > 10:
                 self.move_player_signal.emit(avatar1, avatar1.x() - 10)

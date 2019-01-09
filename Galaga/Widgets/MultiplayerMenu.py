@@ -2,7 +2,7 @@ from PyQt5 import QtCore, QtWidgets
 from PyQt5.QtWidgets import QWidget, QMainWindow, QInputDialog, QLineEdit
 from PyQt5.QtGui import QMovie, QImage, QPalette, QBrush, QIcon
 from PyQt5.QtCore import QSize
-from Galaga.Widgets import GameWidget
+from Galaga.Widgets import HostWidget, GameWidget
 from Galaga import menu_design
 
 
@@ -72,7 +72,8 @@ class Ui_Form(QMainWindow):
         self.close()
 
     def host_btn_press(self):
-        pass
+        self.window = HostWidget.Ui_Form()
+        self.close()
 
     def join_btn_press(self):
         self.HostBtn.hide()

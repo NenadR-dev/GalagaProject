@@ -68,4 +68,3 @@ class Ui_Form(QMainWindow):
         self.window = MultiplayerMenu.Ui_Form()
         self.close()
 
-
