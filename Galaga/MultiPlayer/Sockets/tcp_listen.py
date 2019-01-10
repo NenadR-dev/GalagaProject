@@ -31,8 +31,8 @@ class TcpListen(QThread):
                 if len(text) > 0:
                     if text == 'new_player':
                         HostData.connected_client += 1
-                        HostData.client_address.update({addr, conn})
+                        HostData.client_address[addr] = conn
                         self.update_client_num_signal.emit(HostData.connected_client)
-                        socket_monitor = SocketMonitor(conn)
-                        socket_monitor.daemon = True
-                        socket_monitor.start()
+                        #socket_monitor = SocketMonitor(conn)
+                        #socket_monitor.daemon = True
+                        #socket_monitor.start()
