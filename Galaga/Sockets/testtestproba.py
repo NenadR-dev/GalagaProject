@@ -82,7 +82,6 @@ class Ui_Form(QMainWindow):
         self.waiting.setStyleSheet("background-color: #1e3962; color: white; font: italic; font-size: 30px;")
         self.waiting.hide()
 
-
         self.backBtn = QtWidgets.QPushButton(Form)
         self.backBtn.setGeometry(QtCore.QRect(200, 410, 331, 81))
         self.backBtn.setObjectName("backBtn")
@@ -90,7 +89,6 @@ class Ui_Form(QMainWindow):
 
         self.retranslateUi(Form)
         QtCore.QMetaObject.connectSlotsByName(Form)
-
 
     def retranslateUi(self, Form):
         _translate = QtCore.QCoreApplication.translate
@@ -129,9 +127,6 @@ class Ui_Form(QMainWindow):
             if bytes_sent > 0:
                 self.waiting.setText(QtCore.QCoreApplication.translate("Form", "Connected"))
             print(text)
-
-
-
 
 
 if __name__ == '__main__':
