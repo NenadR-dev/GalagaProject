@@ -35,4 +35,8 @@ class TcpListen(QThread):
                         self.update_client_num_signal.emit(HostData.connected_client)
                         socket_monitor = SocketMonitor(conn)
                         socket_monitor.daemon = True
+<<<<<<< HEAD
                         socket_monitor.start()
+=======
+                        socket_monitor.start()
+>>>>>>> 1b6d25ef4c7f7204fce3daa525445282e9ba8dc4

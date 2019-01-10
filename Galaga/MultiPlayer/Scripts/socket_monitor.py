@@ -1,7 +1,13 @@
 from Galaga.MultiPlayer.Common.common_thread import CommonThread
+<<<<<<< HEAD
 from Galaga.MultiPlayer.Common.host_data import HostData
 from  PyQt5.QtCore import pyqtSignal, QThread
 import socket
+=======
+from Galaga.MultiPlayer.Common.host_modifier import HostData
+from  PyQt5.QtCore import pyqtSignal, QThread
+import  socket
+>>>>>>> 1b6d25ef4c7f7204fce3daa525445282e9ba8dc4
 
 
 class SocketMonitor(QThread):
