@@ -25,3 +25,4 @@ class SocketMonitor(CommonThread):
                 self.trigger_event_signal.emit(split[1], split[2])
             if text == 'disconnect':
                 #remove socket later
+                pass
