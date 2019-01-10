@@ -3,7 +3,8 @@ from PyQt5.QtWidgets import QMainWindow
 from PyQt5.QtGui import QImage, QPalette, QBrush, QIcon
 from PyQt5.QtCore import QSize, pyqtSlot
 from Galaga.MultiPlayer.Sockets import tcp_send, tcp_listen
-
+from Galaga.MultiPlayer.Common.host_data import HostData
+from Galaga.MultiPlayer.Multiplayer_Widgets.GameWidget import MainWindow
 class Ui_Form(QMainWindow):
 
     def __init__(self):
@@ -59,7 +60,11 @@ class Ui_Form(QMainWindow):
         self.startBtn.clicked.connect(self.startBtn_press)
 
     def startBtn_press(self):
-        pass
+        for addr in HostData.client_address:
+            socket = tcp_send.TcpSend(addr,80005).send_msg('start_game')
+        self.window = MainWindow()
+        self.window.start_game()
+        self.close()
 
     @pyqtSlot(int)
     def update_connections(self, num):

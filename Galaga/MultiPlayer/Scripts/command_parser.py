@@ -1,7 +1,7 @@
 from Galaga.MultiPlayer.Common.common_thread import CommonThread
-from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt
+from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread
 
-class CommandParser(CommonThread):
+class CommandParser(QThread):
 
     move_player_signal = pyqtSignal(int, int)
     fire_projectile_signal = pyqtSignal(int)
