@@ -130,10 +130,6 @@ class Ui_Form(QMainWindow):
                 self.waiting.setText(QtCore.QCoreApplication.translate("Form", "Connected"))
             print(text)
 
-
-
-
-
 if __name__ == '__main__':
     app = QApplication(sys.argv)
     w = Ui_Form()

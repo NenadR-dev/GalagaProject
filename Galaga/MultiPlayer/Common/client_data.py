@@ -1,2 +1,2 @@
 class ClientData:
-    connected_players = 0
+    client_id = 0

@@ -5,8 +5,8 @@ from PyQt5.QtCore import QSize
 from Galaga.Widgets import HostWidget
 from Galaga import menu_design
 from Galaga.MultiPlayer.Sockets import tcp_listen, tcp_send
-from Galaga.MultiPlayer.Scripts.server_monitor import ServerMonitor
-from Galaga.MultiPlayer.Multiplayer_Widgets.GameWidget import MainWindow
+from Galaga.MultiPlayer.Multiplayer_Widgets.ServerGameWidget import MainWindow
+from Galaga.MultiPlayer.Scripts.socket_monitor import SocketMonitor
 import socket
 
 
@@ -97,7 +97,7 @@ class Ui_Form(QMainWindow):
             print(text)
 
     def init_server_thread(self, conn):
-        self.server_listener = ServerMonitor(conn)
+        self.server_listener = SocketMonitor(conn)
         self.server_listener.trigger_event_signal.connect(self.game.command_parser.parse_command)
         self.server_listener.daemon = True
         self.server_listener.start()
