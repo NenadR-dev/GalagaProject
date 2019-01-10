@@ -15,7 +15,7 @@ class ServerMonitor(QThread):
     def listen_for_server(self):
         while True:
             text = ''
-            bin = self.active_socket.recv(1024)
+            bin = self.socket.recv(1024)
             text += str(bin, 'utf8')
             if text.__contains__('command-'):
                 split = text.split('-')

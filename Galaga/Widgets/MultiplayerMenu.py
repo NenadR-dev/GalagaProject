@@ -90,10 +90,10 @@ class Ui_Form(QMainWindow):
     def get_host_ip(self):
         text, okPressed = QInputDialog.getText(self, "Insert Host IP", "IP:", QLineEdit.Normal, "")
         if okPressed and text != '':
-            bytes_sent, conn = tcp_send.TcpSend(text, 50005).send_msg('new_player')
+            bytes_sent = tcp_send.TcpSend(text, 50005).send_msg('new_player')
             if bytes_sent > 0:
                 self.waiting.setText(QtCore.QCoreApplication.translate("Form", "Connected"))
-                self.init_server_thread(conn)
+                self.init_server_thread(tcp_send.TcpSend.socket)
             print(text)
 
     def init_server_thread(self, conn):
