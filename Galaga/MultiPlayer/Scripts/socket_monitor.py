@@ -24,10 +24,6 @@ class SocketMonitor(CommonThread):
                 split = text.split('-')
                 self.trigger_event_signal.emit(split[1], split[2])
             if text == 'disconnect':
-<<<<<<< HEAD
                 pass
                 #remove socket later
-=======
-                #remove socket later
-                pass
->>>>>>> 9631fefc1859a0307442839c5875c1534cd642a8
+
