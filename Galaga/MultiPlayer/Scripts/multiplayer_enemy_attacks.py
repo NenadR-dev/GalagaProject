@@ -50,7 +50,7 @@ class EnemyMoveAttack(QThread):
             if avatar.isVisible() and abs(enemy.x() - avatar.x()) <= 50:
                 self.kill_avatar_success(avatar.index, enemy_index)
                 success = True
-        if success = False:
+        if not success:
             self.kill_avatar_fail(enemy_index)
 
     def enemy_clock(self):
