@@ -1,21 +1,18 @@
-from Galaga.MultiPlayer.Common.common_thread import CommonThread
-from Galaga.MultiPlayer.Common.host_data import HostData
-from  PyQt5.QtCore import pyqtSignal, QThread
-import socket
+from PyQt5.QtCore import QThread, pyqtSignal
 
 
-class SocketMonitor(QThread):
+class ServerMonitor(QThread):
 
     trigger_event_signal = pyqtSignal(str, str)
 
     def __init__(self, socket):
         super().__init__()
-        self.active_socket = socket
+        self.socket = socket
 
     def run(self):
-        self.listen_for_activity()
+        self.listen_for_server()
 
-    def listen_for_activity(self):
+    def listen_for_server(self):
         while True:
             text = ''
             bin = self.active_socket.recv(1024)

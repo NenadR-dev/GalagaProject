@@ -11,4 +11,4 @@ class TcpSend:
 
     def send_msg(self, msg):
         data = self.socket.send(msg.encode('utf8'))
-        return data
+        return data, socket

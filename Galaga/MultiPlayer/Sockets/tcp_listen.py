@@ -1,7 +1,7 @@
 # Echo server program
 import socket
 from PyQt5.QtCore import QThread, pyqtSignal
-from Galaga.MultiPlayer.Common.host_modifier import HostData
+from Galaga.MultiPlayer.Common.host_data import HostData
 from Galaga.MultiPlayer.Scripts.socket_monitor import SocketMonitor
 
 
@@ -33,6 +33,6 @@ class TcpListen(QThread):
                         HostData.connected_client += 1
                         HostData.client_address[addr] = conn
                         self.update_client_num_signal.emit(HostData.connected_client)
-                        #socket_monitor = SocketMonitor(conn)
-                        #socket_monitor.daemon = True
-                        #socket_monitor.start()
+                        socket_monitor = SocketMonitor(conn)
+                        socket_monitor.daemon = True
+                        socket_monitor.start()
