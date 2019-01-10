@@ -9,6 +9,7 @@ class ClientMultiplayerMoveModifer(QThread):
     move_player_signal = pyqtSignal(QLabel, int)
     move_enemy_signal = pyqtSignal(int, int)
     move_projectile_signal = pyqtSignal(int, int)
+    enemy_kamikaze_signal = pyqtSignal(int, int, int)
 
     def __init__(self, print_modifier,  parent=None):
         QThread.__init__(self, parent)
@@ -25,11 +26,11 @@ class ClientMultiplayerMoveModifer(QThread):
     @pyqtSlot(str)
     def move_projectile(self, param):
         position = param.split(':')
-        self.move_projectile_signal.emit(int(param[0]), int(param[1]))
+        self.move_projectile_signal.emit(int(position[0]), int(position[1]))
 
     @pyqtSlot(int, int)
-    def move_player(self, key, playerId):
-        avatar = self.printer.label_avatar[playerId]
+    def move_player(self, key, player_id):
+        avatar = self.printer.label_avatar[player_id]
         if key == Qt.Key_Left:
             if avatar.x() > 10:
                 self.move_player_signal.emit(avatar, avatar.x() - 10)
@@ -39,3 +40,7 @@ class ClientMultiplayerMoveModifer(QThread):
         elif key == Qt.Key_Up:
             self.create_projectile_signal.emit(avatar)
 
+    @pyqtSlot(str)
+    def enemy_kamikaze(self, params):
+        param = params.split(':')
+        self.enemy_kamikaze_signal.emit(int(param[0]), int(param[1]), int(param[2]))

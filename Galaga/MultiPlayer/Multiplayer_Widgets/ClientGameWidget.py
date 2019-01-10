@@ -3,22 +3,20 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt
 from Galaga.MultiPlayer.Scripts.command_parser import CommandParser
 from Galaga.MultiPlayer.Scripts.multiplayer_print_modifier import MultiplayerPrintModifier
-from Galaga.MultiPlayer.Scripts.multiplayer_move_modifier import MultiplayerMoveModifer
 from Galaga.MultiPlayer.multiplayer_gameplay import Gameplay
 from Galaga.Scripts.key_notifier import KeyNotifier
-from Galaga.Scripts.projectile_modifier import ProjectileModifier
 from Galaga.MultiPlayer.Sockets.tcp_send import TcpSend
 from Galaga.MultiPlayer.Common.client_data import ClientData
 from Galaga.MultiPlayer.Client.client_move_modifier import ClientMultiplayerMoveModifer
 
 
-class MainWindow(QWidget):
+class ClientMainWindow(QWidget):
 
     command_parser = CommandParser()
     move_player_signal = pyqtSignal(int,int)
 
     def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
+        super(ClientMainWindow, self).__init__(parent)
         self.start_command_parser()
 
     @pyqtSlot(int)
@@ -43,6 +41,7 @@ class MainWindow(QWidget):
         self.movement.move_player_signal.connect(self.Window.move_player)
         self.movement.create_projectile_signal.connect(self.Window.print_projectile)
         self.movement.move_enemy_signal.connect(self.Window.move_enemy)
+        self.movement.enemy_kamikaze_signal.connect(self.Window.enemy_move_attack)
         self.movement.daemon = True
         self.movement.start()
 
@@ -66,6 +65,9 @@ class MainWindow(QWidget):
         self.command_parser.move_projectile_signal.connect(self.movement.move_projectile)
         self.command_parser.remove_projectile_signal.connect(self.Window.remove_projectile)
         self.command_parser.remove_enemy_signal.connect(self.Window.remove_enemy)
+        self.command_parser.enemy_kamikaze_signal.connect(self.movement.enemy_kamikaze)
+        self.command_parser.enemy_projectile_attack_signal.connect(self.Window.enemy_projectile_attack)
+        self.command_parser.remove_player_signal.connect(self.Window.remove_player)
         self.command_parser.daemon = True
         self.command_parser.start()
 

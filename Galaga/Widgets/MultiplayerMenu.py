@@ -5,13 +5,8 @@ from PyQt5.QtCore import QSize
 from Galaga.Widgets import HostWidget
 from Galaga import menu_design
 from Galaga.MultiPlayer.Sockets import tcp_listen, tcp_send
-<<<<<<< HEAD
-from Galaga.MultiPlayer.Multiplayer_Widgets.ServerGameWidget import MainWindow
+from Galaga.MultiPlayer.Multiplayer_Widgets.ServerGameWidget import ServerMainWindow
 from Galaga.MultiPlayer.Scripts.socket_monitor import SocketMonitor
-=======
-from Galaga.MultiPlayer.Scripts.socket_monitor import SocketMonitor
-from Galaga.MultiPlayer.Multiplayer_Widgets.GameWidget import MainWindow
->>>>>>> 03a3dbb00d5833c8daceede78bd229ff49df808b
 import socket
 
 

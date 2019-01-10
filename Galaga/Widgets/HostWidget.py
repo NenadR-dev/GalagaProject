@@ -4,7 +4,7 @@ from PyQt5.QtGui import QImage, QPalette, QBrush, QIcon
 from PyQt5.QtCore import QSize, pyqtSlot
 from Galaga.MultiPlayer.Sockets import tcp_send, tcp_listen
 from Galaga.MultiPlayer.Common.host_data import HostData
-from Galaga.MultiPlayer.Multiplayer_Widgets.ServerGameWidget import MainWindow
+from Galaga.MultiPlayer.Multiplayer_Widgets.ServerGameWidget import ServerMainWindow
 class Ui_Form(QMainWindow):
 
     def __init__(self):

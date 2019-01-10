@@ -8,14 +8,14 @@ from Galaga.MultiPlayer.multiplayer_gameplay import Gameplay
 from Galaga.Scripts.key_notifier import KeyNotifier
 from Galaga.Scripts.projectile_modifier import ProjectileModifier
 
-class MainWindow(QWidget):
+
+class ServerMainWindow(QWidget):
 
     move_player_signal = pyqtSignal(int, int)
     command_parser = CommandParser()
 
-
     def __init__(self, parent=None):
-        super(MainWindow, self).__init__(parent)
+        super(ServerMainWindow, self).__init__(parent)
         self.start_command_parser()
 
     @pyqtSlot(int)
@@ -43,7 +43,6 @@ class MainWindow(QWidget):
         self.move_player_signal.connect(self.player_movement.move_player)
         self.player_movement.daemon = True
         self.player_movement.start()
-
 
     def start_key_notifier(self):
         self.key_notifier = KeyNotifier()

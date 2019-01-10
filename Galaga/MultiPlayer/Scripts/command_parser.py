@@ -1,6 +1,7 @@
 from Galaga.MultiPlayer.Common.common_thread import CommonThread
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt, QThread
 
+
 class CommandParser(QThread):
 
     move_player_signal = pyqtSignal(int, int)
@@ -10,6 +11,10 @@ class CommandParser(QThread):
     move_projectile_signal = pyqtSignal(str)
     remove_projectile_signal = pyqtSignal(int)
     remove_enemy_signal = pyqtSignal(int)
+    next_level_signal = pyqtSignal()
+    enemy_projectile_attack_signal = pyqtSignal(int)
+    enemy_kamikaze_signal = pyqtSignal(int)
+    remove_player_signal = pyqtSignal(int)
 
     def __init__(self):
         super().__init__()
@@ -33,4 +38,12 @@ class CommandParser(QThread):
             self.remove_projectile_signal.emit(int(param))
         elif command == 'remove_enemy':
             self.remove_enemy_signal.emit(int(param))
+        elif command == 'next_level':
+            self.next_level_signal.emit()
+        elif command == 'enemy_projectile_attack':
+            self.enemy_projectile_attack_signal.emit(int(param))
+        elif command == 'enemy_kamikaze':
+            self.enemy_kamikaze_signal.emit(param)  #param se salje kao index:x-osa:y-osa
+        elif command == 'remove_player':
+            self.remove_player_signal.emit(int(param))
         CommonThread.mutex_movement.release()

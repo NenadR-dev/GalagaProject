@@ -87,15 +87,15 @@ class MultiplayerPrintModifier(QWidget):
             self.projectile_label.move(enemy.x() + 20, enemy.y() + 20)
             self.projectile_label.show()
             self.projectile_list.append(self.projectile_label)
-            self.move_enemy_p.emit(self.projectile_label)
             MyThread.mutex.release()
 
     @pyqtSlot()
     def new_level(self):
-        self.remove_enemy_projectile_signal.emit()
-        self.remove_player_projectile_signal.emit()
         for bullet in self.projectile_list:
+            MyThread.mutex.acquire()
             bullet.hide()
+            self.projectile_list.remove(bullet)
+            MyThread.mutex.release()
         for enemy in self.local_enemy_list:
             enemy.show()
 
