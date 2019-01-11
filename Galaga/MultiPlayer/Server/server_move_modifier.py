@@ -26,18 +26,17 @@ class ServerMoveModifier(QThread):
         while True:
             if direction == "left":
                 for i in range(30):
-                    command = 'command-{}:{}-move_enemy'.format(i, enemy_list[i].x() - 10)
                     self.move_enemy_signal.emit(i, enemy_list[i].x() - 10)
-                    self.server_modifier.send_command(command)
                 if enemy_list[0].x() <= 10:
                     direction = "right"
             elif direction == "right":
                 for i in range(30):
-                    command = 'command-{}:{}-move_enemy'.format(i, enemy_list[i].x() + 10)
                     self.move_enemy_signal.emit(i, enemy_list[i].x() + 10)
-                    self.server_modifier.send_command(command)
                 if enemy_list[-1].x() >= 740:
                     direction = "left"
+            command = 'command-{}-move_enemy'.format(direction)
+            print(command)
+            self.server_modifier.send_command(command)
             time.sleep(self.gameplay.enemy_speed)
 
     @pyqtSlot(str)

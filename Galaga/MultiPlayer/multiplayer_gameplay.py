@@ -31,15 +31,16 @@ class Gameplay(QThread):
 
     @pyqtSlot(int)
     def player_hit(self, avatar):
-        if self.avatar_lifes[avatar] > 1:  # ako ima 1 smanjuje mu se na 0 i odmah je mrtav
+        id = avatar - 1
+        if self.avatar_lifes[id] > 1:  # ako ima 1 smanjuje mu se na 0 i odmah je mrtav
             MyThread.gameplay_lock.acquire()
-            self.avatar_lifes[avatar] -= 1
-            print('player{} lifes: {}'.format(avatar, self.avatar1_lifes))
+            self.avatar_lifes[id] -= 1
+            print('player{} lifes: {}'.format(id, self.avatar_lifes[id]))
             MyThread.gameplay_lock.release()
         else:
             MyThread.gameplay_lock.acquire()
-            self.avatar_lifes[avatar] -= 1
-            self.player_killed_signal.emit(avatar)
+            self.avatar_lifes[id] -= 1
+            self.player_killed_signal.emit(id)
             MyThread.gameplay_lock.release()
 
     def new_level(self):

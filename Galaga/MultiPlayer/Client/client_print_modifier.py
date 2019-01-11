@@ -45,12 +45,14 @@ class ClientPrintModifier(QWidget):
             MyThread.mutex.release()
 
     @pyqtSlot(str)
-    def move_enemy(self, params):
+    def move_enemy(self, direction):
         MyThread.mutex.acquire()
-        param = params.split(':')
-        index = int(param[0])
-        position = int(param[1])
-        self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
+        print(direction)
+        for index in range(30):
+            if direction == 'left':
+                self.local_enemy_list[index].move(self.local_enemy_list[index].x()-10, self.local_enemy_list[index].y())
+            else:
+                self.local_enemy_list[index].move(self.local_enemy_list[index].x()+10, self.local_enemy_list[index].y())
         MyThread.mutex.release()
 
     @pyqtSlot(str)

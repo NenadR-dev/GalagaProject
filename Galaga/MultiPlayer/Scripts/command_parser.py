@@ -36,7 +36,7 @@ class CommandParser(QThread):
             print('player count: {} avatar id: {}'.format(command, param))
             self.start_game_signal.emit(param)  #param se salje kao player_count:player_id
         elif command == 'move_enemy':
-            self.move_enemy_signal.emit(param)  #param se salje kao index:position
+            self.move_enemy_signal.emit(param)  #param se salje kao direction
         elif command == 'move_projectile':
             self.move_projectile_signal.emit(param) #param se salje kao index:position
         elif command == 'remove_projectile':

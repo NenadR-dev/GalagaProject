@@ -56,15 +56,16 @@ class ServerMainWindow(QWidget):
         #self.start_enemy_attacks()
 
     def start_enemy_attacks(self):
-        self.enemy_move_attack = EnemyMoveAttack(self.Window.local_enemy_list, self.Window.label_avatar, self.gameplay)
+        '''self.enemy_move_attack = EnemyMoveAttack(self.Window.local_enemy_list, self.Window.label_avatar, self.gameplay)
         self.enemy_move_attack.enemy_attack_move_signal.connect(self.Window.enemy_move_attack)
         self.enemy_move_attack.return_enemy_signal.connect(self.Window.return_enemy)
         self.enemy_move_attack.player_hit_signal.connect(self.gameplay.player_hit)
         self.enemy_move_attack.daemon = True
-        self.enemy_move_attack.start()
+        self.enemy_move_attack.start()'''
 
         self.enemy_projectile_attack = EnemyProjectileAttack(self.Window.local_enemy_list, self.Window.label_avatar)
         self.enemy_projectile_attack.enemy_attack_projectile_signal.connect(self.Window.enemy_projectile_attack)
+        self.command_parser.enemy_projectile_attack_signal.connect(self.Window.print_projectile)
         self.enemy_projectile_attack.daemon = True
         self.enemy_projectile_attack.start()
 

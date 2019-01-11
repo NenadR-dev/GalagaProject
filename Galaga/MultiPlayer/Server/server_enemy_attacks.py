@@ -28,7 +28,7 @@ class EnemyMoveAttack(QThread):
 
     def start_enemy_attack(self):
         enemy_index = random.randint(0, len(self.enemies) - 1)
-        avatar_index = random.randint(len(self.avatars))
+        avatar_index = random.randint(0, len(self.avatars))
         while not self.avatars[avatar_index].isVisible():
             avatar_index = random.randint(len(self.avatars))
         avatar = self.avatars[avatar_index]
