@@ -84,7 +84,6 @@ class PrintModifier(QWidget):
             self.local_enemy_list[enemy_index].hide()
             self.count_enemy_signal.emit()
 
-
         if enemy_index == 0 or enemy_index == 1 or enemy_index == 2:
             neighbour = self.local_enemy_list[enemy_index + 3]
             enemy = self.local_enemy_list[enemy_index]

@@ -17,14 +17,9 @@ class EnemyMoveAttack(QThread):
         self.avatar1 = avatar1
         self.avatar2 = avatar2
         self.gameplay = gameplay
-<<<<<<< HEAD
-
-        self.can_move = True
-=======
         self.can_move = True
         self.queue = Queue()
         self.process = MyProcess(enemy_list, self.queue)
->>>>>>> ed2c756be3630cfac6e4207ab5ac91f9661c4e6b
 
     def run(self):
         self.enemy_clock()
@@ -38,7 +33,7 @@ class EnemyMoveAttack(QThread):
 
     def start_enemy_attack(self):
         #enemy_index = random.randint(0, len(self.enemies) - 1)
-        #self.process.process()
+        #self.process.process()                                     #TODO pitati za proces, da li moze nekako da se pozove iz klase
         enemy_index = self.queue.get()  # process
 
         avatar = self.avatar1

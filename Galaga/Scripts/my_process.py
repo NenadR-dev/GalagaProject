@@ -9,9 +9,9 @@ class MyProcess():
         self.enemys = enemy_list
         self.q = queue
 
-    def choose_enemy(self):
+    def choose_enemy(self, q):
         index = random.randint(0, len(self.enemies) - 1)
-        self.q.put(index)
+        q.put(index)
         print(index)
 
     def process(self):

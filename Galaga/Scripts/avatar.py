@@ -11,7 +11,7 @@ class Avatar(QLabel):
     def __init__(self, parent=None):
         QLabel.__init__(self, parent)
         avatar = QPixmap("img/avatar{}.png".format(Avatar.avatar_num))
-        print("img/avatar{}.png".format(Avatar.avatar_num))
+        #print("img/avatar{}.png".format(Avatar.avatar_num))
         avatar = avatar.scaled(50, 50)
         self.index = Avatar.avatar_num
         Avatar.avatar_num += 1
