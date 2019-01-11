@@ -2,18 +2,17 @@ from PyQt5.QtGui import QMovie, QPainter
 from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt
 from Galaga.MultiPlayer.Scripts.command_parser import CommandParser
-from Galaga.MultiPlayer.Scripts.multiplayer_print_modifier import MultiplayerPrintModifier
+from Galaga.MultiPlayer.Client.client_print_modifier import ClientPrintModifier
 from Galaga.MultiPlayer.multiplayer_gameplay import Gameplay
 from Galaga.Scripts.key_notifier import KeyNotifier
 from Galaga.MultiPlayer.Sockets.tcp_send import TcpSend
 from Galaga.MultiPlayer.Common.client_data import ClientData
-from Galaga.MultiPlayer.Client.client_move_modifier import ClientMultiplayerMoveModifer
+from Galaga.MultiPlayer.Client.client_move_modifier import ClientMoveModifier
 
 
 class ClientMainWindow(QWidget):
 
     command_parser = CommandParser()
-    move_player_signal = pyqtSignal(int,int)
 
     def __init__(self, parent=None):
         super(ClientMainWindow, self).__init__(parent)
@@ -36,8 +35,7 @@ class ClientMainWindow(QWidget):
         self.start_movement()
 
     def start_movement(self):
-        self.movement = ClientMultiplayerMoveModifer(self.Window)
-        self.move_player_signal.connect(self.player_movement.move_player)
+        self.movement = ClientMoveModifier(self.Window)
         self.movement.move_player_signal.connect(self.Window.move_player)
         self.movement.create_projectile_signal.connect(self.Window.print_projectile)
         self.movement.move_enemy_signal.connect(self.Window.move_enemy)
@@ -49,13 +47,6 @@ class ClientMainWindow(QWidget):
         self.key_notifier = KeyNotifier()
         self.key_notifier.key_signal.connect(self.__update_position__)
         self.key_notifier.start()
-
-    def start_gameplay(self, number_of_players):
-        self.gameplay = Gameplay(number_of_players)
-        self.gameplay.next_level_signal.connect(self.Window.new_level)
-        self.gameplay.player_killed_signal.connect(self.Window.remove_player)
-        self.gameplay.daemon = True
-        self.gameplay.start()
 
     def start_command_parser(self):
         self.command_parser.start_game_signal.connect(self.start_game)
@@ -72,7 +63,7 @@ class ClientMainWindow(QWidget):
         self.command_parser.start()
 
     def start_ui_window(self, number_of_players):
-        self.Window = MultiplayerPrintModifier(number_of_players)
+        self.Window = ClientPrintModifier(number_of_players)
         self.setWindowTitle("PyGalaga")
         self.show()
 
@@ -99,11 +90,8 @@ class ClientMainWindow(QWidget):
     #salje serveru
     def move_player(self, key):
         if key == Qt.Key_Left:
-            self.move_player_signal.emit(key, ClientData.client_id)
-            TcpSend.send_msg(msg='{}-{}-{}'.format('command', ClientData.client_id, key))
+            TcpSend.send_msg(msg='{}-{}-move_left'.format('command', ClientData.client_id))
         elif key == Qt.Key_Right:
-            self.move_player_signal.emit(key, ClientData.client_id)
-            TcpSend.send_msg(msg='{}-{}-{}'.format('command', ClientData.client_id, key))
+            TcpSend.send_msg(msg='{}-{}-move_right'.format('command', ClientData.client_id))
         elif key == Qt.Key_Up:
-            self.move_player_signal.emit(key, ClientData.client_id)
-            TcpSend.send_msg(msg='{}-{}-{}'.format('command', ClientData.client_id, key))
+            TcpSend.send_msg(msg='{}-{}-move_up'.format('command', ClientData.client_id))

@@ -1,22 +1,27 @@
+from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from PyQt5.QtGui import QMovie, QPainter
 from PyQt5.QtWidgets import QWidget
-from PyQt5.QtCore import pyqtSignal, pyqtSlot
 from Galaga.MultiPlayer.Scripts.command_parser import CommandParser
-from Galaga.MultiPlayer.Scripts.multiplayer_print_modifier import MultiplayerPrintModifier
-from Galaga.MultiPlayer.Scripts.multiplayer_move_modifier import MultiplayerMoveModifer
-from Galaga.MultiPlayer.multiplayer_gameplay import Gameplay
+from Galaga.MultiPlayer.Server.server_modifier import ServerModifer
+from Galaga.MultiPlayer.Server.server_enemy_attacks import EnemyMoveAttack, EnemyProjectileAttack
+from Galaga.MultiPlayer.Server.server_print_modifier import ServerPrintModifier
+from Galaga.MultiPlayer.Server.server_projectile_modifier import ProjectileModifier, EnemyProjectileModifier
+from Galaga.MultiPlayer.Server.server_move_modifier import ServerMoveModifier
 from Galaga.Scripts.key_notifier import KeyNotifier
-from Galaga.Scripts.projectile_modifier import ProjectileModifier
-
+from Galaga.MultiPlayer.multiplayer_gameplay import Gameplay
+from Galaga.MultiPlayer.Sockets.tcp_listen import TcpListen
 
 class ServerMainWindow(QWidget):
 
     move_player_signal = pyqtSignal(int, int)
     command_parser = CommandParser()
+    server = ServerModifer()
 
     def __init__(self, parent=None):
         super(ServerMainWindow, self).__init__(parent)
         self.start_command_parser()
+        self.server.daemon = True
+        self.server.start()
 
     @pyqtSlot(int)
     def start_game(self, number_of_players):
@@ -34,9 +39,47 @@ class ServerMainWindow(QWidget):
 
         #set avatars and projectile
         self.start_player_movement()
+        #start projectile thread
+        self.start_projectile_movement()
+        #start enemy attacks
+        self.start_enemy_attacks()
+
+    def start_enemy_attacks(self):
+        self.enemy_move_attack = EnemyMoveAttack(self.Window.local_enemy_list, self.Window.label_avatar, self.gameplay)
+        self.enemy_move_attack.enemy_attack_move_signal.connect(self.Window.enemy_move_attack)
+        self.enemy_move_attack.return_enemy_signal.connect(self.Window.return_enemy)
+        self.enemy_move_attack.player_hit_signal.connect(self.gameplay.player_hit)
+        self.enemy_move_attack.daemon = True
+        self.enemy_move_attack.start()
+
+        self.enemy_projectile_attack = EnemyProjectileAttack(self.Window.local_enemy_list, self.Window.label_avatar)
+        self.enemy_projectile_attack.enemy_attack_projectile_signal.connect(self.Window.enemy_projectile_attack)
+        self.enemy_projectile_attack.daemon = True
+        self.enemy_projectile_attack.start()
+
+
+    def start_projectile_movement(self):
+        self.projectiles = ProjectileModifier(self.Window.local_enemy_list, self.Window)
+        self.projectiles.enemy_killed_signal.connect(self.Window.remove_enemy)
+        self.projectiles.projectile_move_signal.connect(self.Window.move_projectile)
+        self.projectiles.projectile_remove_signal.connect(self.Window.remove_projectile)
+        self.Window.move_p.connect(self.projectiles.add_projectile)
+        self.Window.count_enemy_signal.connect(self.gameplay.count_killed_enemies)
+        self.Window.remove_enemy_projectile_signal.connect(self.projectiles.remove_projectiles)
+        self.projectiles.daemon = True
+        self.projectiles.start()
+
+        self.enemy_projectiles = EnemyProjectileModifier(self.Window, self.gameplay)
+        self.enemy_projectiles.projectile_move_signal.connect(self.Window.move_enemy_projectile)
+        self.Window.move_enemy_p.connect(self.enemy_projectiles.add_projectile)
+        self.enemy_projectiles.projectile_remove_signal.connect(self.projectiles.remove_projectiles)
+        self.enemy_projectiles.player_hit_signal.connect(self.gameplay.player_hit)
+        self.enemy_projectiles.daemon = True
+        self.enemy_projectiles.start()
+
 
     def start_player_movement(self):
-        self.player_movement = MultiplayerMoveModifer(self.Window.local_enemy_list, self.Window, self.gameplay)
+        self.player_movement = ServerMoveModifier(self.Window.local_enemy_list, self.Window ,self.server, self.gameplay)
         self.player_movement.create_projectile_signal.connect(self.Window.print_projectile)
         self.player_movement.move_enemy_signal.connect(self.Window.move_enemy)
         self.player_movement.move_player_signal(self.Window.move_player)
@@ -62,7 +105,7 @@ class ServerMainWindow(QWidget):
         self.command_parser.start()
 
     def start_ui_window(self, number_of_players):
-        self.Window = MultiplayerPrintModifier(number_of_players)
+        self.Window = ServerPrintModifier(number_of_players, self.server)
         self.setWindowTitle("PyGalaga")
         self.show()
 

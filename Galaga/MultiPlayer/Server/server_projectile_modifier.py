@@ -16,7 +16,6 @@ class ProjectileModifier(QThread):
         self.printer = print_modifier
         self.projectiles = []
         self.gameplay = gameplay
-        self.visible = []
 
     def run(self):
         self.move_projectiles(projectile_list=self.projectiles)
@@ -35,29 +34,27 @@ class ProjectileModifier(QThread):
             time.sleep(0.02)
 
     def check_collision(self, projectile_list, projectile):
-        if projectile.isVisible():
-            for enemy in self.enemies:
-                if enemy.isVisible():
+        if projectile.isVisible() and projectile.y() <= 160:
+            for enemy in reversed(self.enemies):
+                if enemy.isVisible() and projectile.y() <= enemy.y():
                     if enemy.x() <= projectile.x() <= enemy.x() + 50:
-                        if enemy.y() <= projectile.y() <= enemy.y() + 50:
-                            projectile_list.remove(projectile)
-                            self.projectile_remove_signal.emit(projectile)
-                            self.enemy_killed_signal.emit(enemy)
-                            break
+                        projectile_list.remove(projectile)
+                        self.projectile_remove_signal.emit(projectile)
+                        self.enemy_killed_signal.emit(enemy)
+                        break
 
     @pyqtSlot(QLabel)
     def add_projectile(self, projectile):
-        #MyThread.projectile_mutex.acquire()
+        MyThread.projectile_mutex.acquire()
         self.projectiles.append(projectile)
-        #MyThread.projectile_mutex.release()
+        MyThread.projectile_mutex.release()
 
     @pyqtSlot()
     def remove_projectiles(self):
-        #MyThread.projectile_mutex.acquire()
+        MyThread.projectile_mutex.acquire()
         for p in self.projectiles:
             self.projectiles.remove(p)
-        #MyThread.projectile_mutex.release()
-
+        MyThread.projectile_mutex.release()
 
 class EnemyProjectileModifier(QThread):
 
@@ -65,10 +62,10 @@ class EnemyProjectileModifier(QThread):
     projectile_remove_signal = pyqtSignal(QLabel)
     player_hit_signal = pyqtSignal(int)
 
-    def __init__(self, avatar1, avatar2, print_modifier, gameplay):
+    def __init__(self, print_modifier, gameplay):
         super().__init__(parent=None)
-        self.enemies = [avatar1, avatar2]
         self.printer = print_modifier
+        self.enemies = self.printer.label_avatar
         self.projectiles = []
         self.gameplay = gameplay
 
@@ -83,8 +80,8 @@ class EnemyProjectileModifier(QThread):
                         projectile_list.remove(projectile)
                         self.projectile_remove_signal.emit(projectile)
                     else:
-                        self.check_collision(projectile_list, projectile)
                         self.projectile_move_signal.emit(projectile, projectile.y() + 5)
+                        self.check_collision(projectile_list, projectile)
 
             time.sleep(0.02)
 
@@ -102,13 +99,13 @@ class EnemyProjectileModifier(QThread):
 
     @pyqtSlot(QLabel)
     def add_projectile(self, projectile):
-        #MyThread.projectile_mutex.acquire()
+        MyThread.projectile_mutex.acquire()
         self.projectiles.append(projectile)
-        #MyThread.projectile_mutex.release()
+        MyThread.projectile_mutex.release()
 
     @pyqtSlot()
     def remove_projectiles(self):
-        #MyThread.projectile_mutex.acquire()
+        MyThread.projectile_mutex.acquire()
         for p in self.projectiles:
             self.projectiles.remove(p)
-        #MyThread.projectile_mutex.release()
+        MyThread.projectile_mutex.release()

@@ -24,29 +24,33 @@ class PrintModifier(QWidget):
         self.resize(QSize(800, 600))
         self.projectile_list = []
         self.print_enemies()
+<<<<<<< HEAD
         self.gifts = []
         self.gift = QLabel(self)
         self.gift_type = True
+=======
+        self.in_attack_ids = []
+>>>>>>> b14e74213b5c4cebdac11e3732a71ae7ab888dba
 
     def print_enemies(self):
         if len(self.local_enemy_list) > 0:
             self.local_enemy_list.clear()     # Ubijeni vanzemaljci su samo sakriveni
-        for i in range(0, 10):
-            for j in range(0, 3):
-                MyThread.mutex.acquire()
+        for i in reversed(range(0, 3)):
+            for j in reversed(range(0, 10)):
+                #MyThread.mutex.acquire()
                 label_enemy = QLabel(self)
                 enemy = QPixmap("img/enemy.png")
                 enemy = enemy.scaled(50, 50)
                 label_enemy.setPixmap(enemy)
-                label_enemy.move(150 + i * 50, 10 + j * 50)
+                label_enemy.move(150 + j * 50, 10 + i * 50)
                 label_enemy.show()
                 self.local_enemy_list.append(label_enemy)
-                MyThread.mutex.release()
+                #MyThread.mutex.release()
 
     @pyqtSlot(QLabel)
     def print_projectile(self, avatar):
         if avatar.isVisible():
-            MyThread.mutex.acquire()
+            #MyThread.mutex.acquire()
             pew = QPixmap("img/projectile.png")
             pew = pew.scaled(10, 10)
             self.projectile_label = QLabel(self)
@@ -55,55 +59,62 @@ class PrintModifier(QWidget):
             self.projectile_label.show()
             self.projectile_list.append(self.projectile_label)
             self.move_p.emit(self.projectile_label)
-            MyThread.mutex.release()
+            #MyThread.mutex.release()
 
     @pyqtSlot(int, int)
     def move_enemy(self, index, position):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
         self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
     @pyqtSlot(QLabel, int)
     def move_projectile(self, projectile, position):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
         projectile.move(projectile.x(), position)
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
     @pyqtSlot(int, int, int)
     def enemy_move_attack(self, enemy_index, coord_x, coord_y):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
+        if enemy_index not in self.in_attack_ids:
+            self.in_attack_ids.append(enemy_index)
         enemy = self.local_enemy_list[enemy_index]
         enemy.move(enemy.x() + coord_x, enemy.y() + coord_y)
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
     @pyqtSlot(QLabel, int)
     def move_player(self, player, i):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
         player.move(i, player.y())
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
     @pyqtSlot(int, bool)
     def return_enemy(self, enemy_index, destroyed):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
+        self.in_attack_ids.remove(enemy_index)
         if destroyed:
             self.local_enemy_list[enemy_index].hide()
             self.count_enemy_signal.emit()
 
-        if enemy_index == 0 or enemy_index == 1 or enemy_index == 2:
-            neighbour = self.local_enemy_list[enemy_index + 3]
+        if enemy_index == 29 or enemy_index == 19 or enemy_index == 9:
+            i = 1
+            neighbour = self.local_enemy_list[enemy_index - i]
+            while (not (neighbour.y() - 10) % 50) and neighbour.y() <= 110:
+                i += 1
+                neighbour = self.local_enemy_list[enemy_index - i]
             enemy = self.local_enemy_list[enemy_index]
             enemy.move(neighbour.x() - 50, neighbour.y())
         else:
-            neighbour = self.local_enemy_list[enemy_index - 3]
+            neighbour = self.local_enemy_list[enemy_index + 1]
             enemy = self.local_enemy_list[enemy_index]
             enemy.move(neighbour.x() + 50, neighbour.y())
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
     @pyqtSlot(int)
     def enemy_projectile_attack(self, enemy_index):
         enemy = self.local_enemy_list[enemy_index]
         if enemy.isVisible():
-            MyThread.mutex.acquire()
+            #MyThread.mutex.acquire()
             pew = QPixmap("img/new_enemy_projectile.png")
             pew = pew.scaled(20, 20)
             self.projectile_label = QLabel(self)
@@ -112,51 +123,53 @@ class PrintModifier(QWidget):
             self.projectile_label.show()
             self.projectile_list.append(self.projectile_label)
             self.move_enemy_p.emit(self.projectile_label)
-            MyThread.mutex.release()
+            #MyThread.mutex.release()
 
     @pyqtSlot(QLabel, int)
     def move_enemy_projectile(self, projectile, position):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
         projectile.move(projectile.x(), position)
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
     @pyqtSlot()
     def new_level(self):
         self.remove_enemy_projectile_signal.emit()
         self.remove_player_projectile_signal.emit()
-        self.return_enemy_signal.emit(False)            #TODO namestiti vracanje enemyja pre next_level-a
+        #self.return_enemy_signal.emit(False)            #TODO namestiti vracanje enemyja pre next_level-a
 
         for bullet in self.projectile_list:
             bullet.hide()
+        for id in self.in_attack_ids:
+            self.return_enemy(id, False)
         for enemy in self.local_enemy_list:
             enemy.show()
-        self.return_enemy_signal.emit(True)
+        #self.return_enemy_signal.emit(True)
 
     @pyqtSlot(int)
     def remove_player(self, index):
         if self.label_avatar1.index == index:
-            MyThread.mutex.acquire()
+            #MyThread.mutex.acquire()
             self.label_avatar1.hide()
-            MyThread.mutex.release()
+            #MyThread.mutex.release()
 
         elif self.label_avatar2.index == index:
-            MyThread.mutex.acquire()
+            #MyThread.mutex.acquire()
             self.label_avatar2.hide()
-            MyThread.mutex.release()
+            #MyThread.mutex.release()
 
     @pyqtSlot(QLabel)
     def remove_projectile(self, projectile):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
         projectile.hide()
         self.projectile_list.remove(projectile)
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
     @pyqtSlot(QLabel)
     def remove_enemy(self, enemy):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
         enemy.hide()
         self.count_enemy_signal.emit()
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
     @pyqtSlot()
     def print_gift(self):

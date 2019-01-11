@@ -5,18 +5,19 @@ from Galaga.Scripts.my_thread import MyThread
 from Galaga.Scripts.avatar import Avatar
 
 
-class MultiplayerPrintModifier(QWidget):
+class ServerPrintModifier(QWidget):
 
     move_p = pyqtSignal(QLabel)
     move_enemy_p = pyqtSignal(QLabel)
     count_enemy_signal = pyqtSignal()
-    #return_enemy_signal = pyqtSignal(bool)
     remove_enemy_projectile_signal = pyqtSignal()
     remove_player_projectile_signal = pyqtSignal()
 
-    def __init__(self, avatar_num, parent=None):
+    def __init__(self, avatar_num, server, parent=None):
         QWidget.__init__(self, parent)
         self.local_enemy_list = []
+        self.server_modifier = server
+        self.label_avatar = []
         for i in range(avatar_num):
             self.label_avatar.append(Avatar(self))
         self.resize(QSize(800, 600))
@@ -24,8 +25,6 @@ class MultiplayerPrintModifier(QWidget):
         self.print_enemies()
 
     def print_enemies(self):
-        if len(self.local_enemy_list) > 0:
-            self.local_enemy_list.clear()     # Ubijeni vanzemaljci su samo sakriveni
         for i in range(0, 10):
             for j in range(0, 3):
                 MyThread.mutex.acquire()
@@ -50,18 +49,24 @@ class MultiplayerPrintModifier(QWidget):
             self.projectile_label.show()
             self.projectile_list.append(self.projectile_label)
             self.move_p.emit(self.projectile_label)
+            command = 'command-{}-create_projectile'.format(avatar.index)
+            self.server_modifier.send_command(command)
             MyThread.mutex.release()
 
     @pyqtSlot(int, int)
     def move_enemy(self, index, position):
         MyThread.mutex.acquire()
         self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
+        command = 'command-{}:{}-create_projectile'.format(index, position)
+        self.server_modifier.send_command(command)
         MyThread.mutex.release()
 
     @pyqtSlot(QLabel, int)
     def move_projectile(self, projectile, position):
         MyThread.mutex.acquire()
         projectile.move(projectile.x(), position)
+        command = 'command-{}:{}-create_projectile'.format(self.projectile_list.index(projectile), position)
+        self.server_modifier.send_command(command)
         MyThread.mutex.release()
 
     @pyqtSlot(int, int, int)
@@ -69,11 +74,15 @@ class MultiplayerPrintModifier(QWidget):
         MyThread.mutex.acquire()
         enemy = self.local_enemy_list[enemy_index]
         enemy.move(enemy.x() + coord_x, enemy.y() + coord_y)
+        command = 'command-{}:{}:{}-create_projectile'.format(enemy_index, enemy.x(), enemy.y())
+        self.server_modifier.send_command(command)
         MyThread.mutex.release()
 
     @pyqtSlot(QLabel, int)
     def move_player(self, player, i):
         MyThread.mutex.acquire()
+        command = 'command-{}:{}-move_player'.format(player.index, i)
+        self.server_modifier.send_command(command)
         player.move(i, player.y())
         MyThread.mutex.release()
 
@@ -83,15 +92,20 @@ class MultiplayerPrintModifier(QWidget):
         if destroyed:
             self.local_enemy_list[enemy_index].hide()
             self.count_enemy_signal.emit()
-
+            command = 'command-{}-remove_enemy'.format(enemy_index)
+            self.server_modifier.send_command(command)
         if enemy_index == 0 or enemy_index == 1 or enemy_index == 2:
             neighbour = self.local_enemy_list[enemy_index + 3]
             enemy = self.local_enemy_list[enemy_index]
             enemy.move(neighbour.x() - 50, neighbour.y())
+            command = 'command-{}:{}-move_enemy'.format(enemy.x(), enemy.y())
+            self.server_modifier.send_command(command)
         else:
             neighbour = self.local_enemy_list[enemy_index - 3]
             enemy = self.local_enemy_list[enemy_index]
             enemy.move(neighbour.x() + 50, neighbour.y())
+            command = 'command-{}:{}-move_enemy'.format(enemy.x(), enemy.y())
+            self.server_modifier.send_command(command)
         MyThread.mutex.release()
 
     @pyqtSlot(int)
@@ -107,19 +121,24 @@ class MultiplayerPrintModifier(QWidget):
             self.projectile_label.show()
             self.projectile_list.append(self.projectile_label)
             self.move_enemy_p.emit(self.projectile_label)
+            command = 'command-{}-enemy_projectile_attack'.format(enemy_index)
+            self.server_modifier.send_command(command)
             MyThread.mutex.release()
 
     @pyqtSlot(QLabel, int)
     def move_enemy_projectile(self, projectile, position):
         MyThread.mutex.acquire()
+        command = 'command-{}-move_projectile'.format(self.projectile_list.index(projectile))
+        self.server_modifier.send_command(command)
         projectile.move(projectile.x(), position)
         MyThread.mutex.release()
 
     @pyqtSlot()
     def new_level(self):
+        command = 'command-null-next_level'
+        self.server_modifier.send_command(command)
         self.remove_enemy_projectile_signal.emit()
         self.remove_player_projectile_signal.emit()
-        #self.return_enemy_signal.emit(False)            #TODO namestiti vracanje enemyja pre next_level-a
         for bullet in self.projectile_list:
             bullet.hide()
         for enemy in self.local_enemy_list:
@@ -131,6 +150,8 @@ class MultiplayerPrintModifier(QWidget):
             if avatar.index == index:
                 MyThread.mutex.acquire()
                 avatar.hide()
+                command = 'command-{}-remove_player'.format(avatar.index)
+                self.server_modifier.send_command(command)
                 MyThread.mutex.release()
 
 
@@ -138,6 +159,8 @@ class MultiplayerPrintModifier(QWidget):
     def remove_projectile(self, projectile):
         MyThread.mutex.acquire()
         projectile.hide()
+        command = 'command-{}-remove_projectile'.format(self.projectile_list.index(projectile))
+        self.server_modifier.send_command(command)
         self.projectile_list.remove(projectile)
         MyThread.mutex.release()
 
@@ -145,6 +168,8 @@ class MultiplayerPrintModifier(QWidget):
     def remove_enemy(self, enemy):
         MyThread.mutex.acquire()
         enemy.hide()
+        command = 'command-{}-remove_enemy'.format(self.local_enemy_list.index(enemy))
+        self.server_modifier.send_command(command)
         self.count_enemy_signal.emit()
         MyThread.mutex.release()
 
