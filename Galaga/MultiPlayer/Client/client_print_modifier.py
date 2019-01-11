@@ -30,8 +30,9 @@ class ClientPrintModifier(QWidget):
                 self.local_enemy_list.append(label_enemy)
                 MyThread.mutex.release()
 
-    @pyqtSlot(QLabel)
-    def print_projectile(self, avatar):
+    @pyqtSlot(int)
+    def print_projectile(self, avatar_index):
+        avatar = self.label_avatar[avatar_index]
         if avatar.isVisible():
             MyThread.mutex.acquire()
             pew = QPixmap("img/projectile.png")
@@ -43,28 +44,41 @@ class ClientPrintModifier(QWidget):
             self.projectile_list.append(self.projectile_label)
             MyThread.mutex.release()
 
-    @pyqtSlot(int, int)
-    def move_enemy(self, index, position):
+    @pyqtSlot(str)
+    def move_enemy(self, params):
         MyThread.mutex.acquire()
+        param = params.split(':')
+        index = int(param[0])
+        position = int(param[1])
         self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
         MyThread.mutex.release()
 
-    @pyqtSlot(int, int)
-    def move_projectile(self, index, position):
+    @pyqtSlot(str)
+    def move_projectile(self, params):
         MyThread.mutex.acquire()
+        param = params.split(':')
+        index = int(param[0])
+        position = int(param[1])
         self.projectile_list[index].move(self.projectile_list[index].x(), position)
         MyThread.mutex.release()
 
-    @pyqtSlot(int, int, int)
-    def enemy_move_attack(self, enemy_index, coord_x, coord_y):
+    @pyqtSlot(str)
+    def enemy_move_attack(self, params):
         MyThread.mutex.acquire()
+        param = params.split(':')
+        enemy_index = int(param[0])
+        coord_x = int(param[1])
+        coord_y = int(param[2])
         enemy = self.local_enemy_list[enemy_index]
         enemy.move(enemy.x() + coord_x, enemy.y() + coord_y)
         MyThread.mutex.release()
 
-    @pyqtSlot(int, int)
-    def move_player(self, id, position):
+    @pyqtSlot(str)
+    def move_player(self, params):
         MyThread.mutex.acquire()
+        param = params.split(':')
+        id = int(param[0])
+        position = int(param[1])
         self.label_avatar[id].move(position, self.label_avatar[id].y())
         MyThread.mutex.release()
 

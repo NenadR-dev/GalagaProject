@@ -40,8 +40,11 @@ class ServerMoveModifier(QThread):
                     direction = "left"
             time.sleep(self.gameplay.enemy_speed)
 
-    @pyqtSlot(int, int)
-    def move_player(self, key, playerId):
+    @pyqtSlot(str)
+    def move_player(self, params):
+        param = params.split(':')
+        key = int(param[1])
+        playerId = int(param[0])
         avatar = self.printer.label_avatar[playerId]
         if key == Qt.Key_Left:
             if avatar.x() > 10:

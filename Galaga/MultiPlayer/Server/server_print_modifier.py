@@ -57,7 +57,7 @@ class ServerPrintModifier(QWidget):
     def move_enemy(self, index, position):
         MyThread.mutex.acquire()
         self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
-        command = 'command-{}:{}-create_projectile'.format(index, position)
+        command = 'command-{}:{}-move_enemy'.format(index, position)
         self.server_modifier.send_command(command)
         MyThread.mutex.release()
 
@@ -65,7 +65,7 @@ class ServerPrintModifier(QWidget):
     def move_projectile(self, projectile, position):
         MyThread.mutex.acquire()
         projectile.move(projectile.x(), position)
-        command = 'command-{}:{}-create_projectile'.format(self.projectile_list.index(projectile), position)
+        command = 'command-{}:{}-move_projectile'.format(self.projectile_list.index(projectile), position)
         self.server_modifier.send_command(command)
         MyThread.mutex.release()
 
@@ -74,14 +74,14 @@ class ServerPrintModifier(QWidget):
         MyThread.mutex.acquire()
         enemy = self.local_enemy_list[enemy_index]
         enemy.move(enemy.x() + coord_x, enemy.y() + coord_y)
-        command = 'command-{}:{}:{}-create_projectile'.format(enemy_index, enemy.x(), enemy.y())
+        command = 'command-{}:{}:{}-enemy_kamikaze'.format(enemy_index, enemy.x(), enemy.y())
         self.server_modifier.send_command(command)
         MyThread.mutex.release()
 
     @pyqtSlot(QLabel, int)
     def move_player(self, player, i):
         MyThread.mutex.acquire()
-        command = 'command-{}:{}-move_player'.format(player.index, i)
+        command = 'command-{}:{}-print_player'.format(player.index, i)
         self.server_modifier.send_command(command)
         player.move(i, player.y())
         MyThread.mutex.release()

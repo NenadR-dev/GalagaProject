@@ -14,17 +14,23 @@ class ClientMainWindow(QWidget):
 
     command_parser = CommandParser()
 
-    def __init__(self, parent=None):
-        super(ClientMainWindow, self).__init__(parent)
-        self.start_command_parser()
 
-    @pyqtSlot(int)
-    def start_game(self, number_of_players):
+    def __init__(self, tcp_socket, parent=None):
+        super(ClientMainWindow, self).__init__(parent)
+        self.command_parser.start_game_signal.connect(self.start_game)
+        self.command_parser.daemon = True
+        self.command_parser.start()
+        self.tcp = tcp_socket
+    @pyqtSlot(str)
+    def start_game(self, params):
+        self.param = params.split(':')
+        self.player_count = int(self.param[0])
+        ClientData.client_id = int(self.param[1])
         self.setGeometry(0, 0, 800, 600)
         self.setFixedSize(800, 600)
 
-        self.start_ui_window(number_of_players)
-        self.start_gameplay(number_of_players)
+        self.start_ui_window(self.player_count)
+        self.start_command_parser()
         self.start_key_notifier()
 
         #set gif animation
@@ -32,16 +38,16 @@ class ClientMainWindow(QWidget):
         self.movie.frameChanged.connect(self.repaint)
         self.movie.start()
 
-        self.start_movement()
+        #self.start_movement()
 
-    def start_movement(self):
+    '''def start_movement(self):
         self.movement = ClientMoveModifier(self.Window)
         self.movement.move_player_signal.connect(self.Window.move_player)
         self.movement.create_projectile_signal.connect(self.Window.print_projectile)
         self.movement.move_enemy_signal.connect(self.Window.move_enemy)
         self.movement.enemy_kamikaze_signal.connect(self.Window.enemy_move_attack)
         self.movement.daemon = True
-        self.movement.start()
+        self.movement.start()'''
 
     def start_key_notifier(self):
         self.key_notifier = KeyNotifier()
@@ -49,22 +55,20 @@ class ClientMainWindow(QWidget):
         self.key_notifier.start()
 
     def start_command_parser(self):
-        self.command_parser.start_game_signal.connect(self.start_game)
         self.command_parser.move_player_signal.connect(self.Window.move_player)
         self.command_parser.fire_projectile_signal.connect(self.Window.print_projectile)
-        self.command_parser.move_enemy_signal.connect(self.movement.move_enemy)
-        self.command_parser.move_projectile_signal.connect(self.movement.move_projectile)
+        self.command_parser.move_enemy_signal.connect(self.Window.move_enemy)
+        self.command_parser.move_projectile_signal.connect(self.Window.move_projectile)
         self.command_parser.remove_projectile_signal.connect(self.Window.remove_projectile)
         self.command_parser.remove_enemy_signal.connect(self.Window.remove_enemy)
-        self.command_parser.enemy_kamikaze_signal.connect(self.movement.enemy_kamikaze)
+        #self.command_parser.enemy_kamikaze_signal.connect(self.Window.enemy_move_attack)
         self.command_parser.enemy_projectile_attack_signal.connect(self.Window.enemy_projectile_attack)
         self.command_parser.remove_player_signal.connect(self.Window.remove_player)
-        self.command_parser.daemon = True
-        self.command_parser.start()
+
 
     def start_ui_window(self, number_of_players):
-        self.Window = ClientPrintModifier(number_of_players)
-        self.setWindowTitle("PyGalaga")
+        self.Window = ClientPrintModifier(number_of_players, self)
+        self.setWindowTitle("PyGalagaClient")
         self.show()
 
     def paintEvent(self, event):
@@ -90,8 +94,11 @@ class ClientMainWindow(QWidget):
     #salje serveru
     def move_player(self, key):
         if key == Qt.Key_Left:
-            TcpSend.send_msg(msg='{}-{}-move_left'.format('command', ClientData.client_id))
+            print('{}-{}-move_player'.format('command', ClientData.client_id))
+            self.tcp.send('command-{}:{}-move_player'.format(ClientData.client_id, key).encode('utf8'))
         elif key == Qt.Key_Right:
-            TcpSend.send_msg(msg='{}-{}-move_right'.format('command', ClientData.client_id))
+            print('{}-{}-move_player'.format('command', ClientData.client_id))
+            self.tcp.send('command-{}:{}-move_player'.format(ClientData.client_id, key).encode('utf8'))
         elif key == Qt.Key_Up:
-            TcpSend.send_msg(msg='{}-{}-move_up'.format('command', ClientData.client_id))
+            print('{}-{}-create_projectile'.format('command', ClientData.client_id))
+            self.tcp.send('command-{}-create_projectile'.format(ClientData.client_id).encode('utf8'))

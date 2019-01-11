@@ -60,10 +60,11 @@ class Ui_Form(QMainWindow):
         self.startBtn.clicked.connect(self.startBtn_press)
 
     def startBtn_press(self):
-        for addr in HostData.client_address:
-            socket = tcp_send.TcpSend(addr,80005).send_msg('start_game')
-        self.window = MainWindow()
-        self.window.start_game()
+        for node in HostData.client_address:
+            command = 'command-{}:{}-start_game'.format(HostData.connected_client + 1, node)
+            HostData.client_address[node].send(command.encode('utf8'))
+        self.window = ServerMainWindow()
+        self.window.start_game('{}'.format(HostData.connected_client + 1))
         self.close()
 
     @pyqtSlot(int)

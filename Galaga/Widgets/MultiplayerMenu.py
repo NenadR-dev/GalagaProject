@@ -5,7 +5,7 @@ from PyQt5.QtCore import QSize
 from Galaga.Widgets import HostWidget
 from Galaga import menu_design
 from Galaga.MultiPlayer.Sockets import tcp_listen, tcp_send
-from Galaga.MultiPlayer.Multiplayer_Widgets.ServerGameWidget import ServerMainWindow
+from Galaga.MultiPlayer.Multiplayer_Widgets.ClientGameWidget import ClientMainWindow
 from Galaga.MultiPlayer.Scripts.socket_monitor import SocketMonitor
 import socket
 
@@ -15,7 +15,6 @@ class Ui_Form(QMainWindow):
     def __init__(self):
         super().__init__()
         self.window = self.setupUi(self)
-        self.game = MainWindow()
         self.show()
 
     def setupUi(self, Form):
@@ -93,6 +92,7 @@ class Ui_Form(QMainWindow):
             bytes_sent = tcp_send.TcpSend(text, 50005).send_msg('new_player')
             if bytes_sent > 0:
                 self.waiting.setText(QtCore.QCoreApplication.translate("Form", "Connected"))
+                self.game = ClientMainWindow(tcp_send.TcpSend.socket)
                 self.init_server_thread(tcp_send.TcpSend.socket)
             print(text)
 
