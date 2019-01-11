@@ -37,8 +37,9 @@ class ServerPrintModifier(QWidget):
                 self.local_enemy_list.append(label_enemy)
                 MyThread.mutex.release()
 
-    @pyqtSlot(QLabel)
-    def print_projectile(self, avatar):
+    @pyqtSlot(int)
+    def print_projectile(self, avatar_id):
+        avatar = self.label_avatar[avatar_id]
         if avatar.isVisible():
             MyThread.mutex.acquire()
             pew = QPixmap("img/projectile.png")
@@ -49,7 +50,7 @@ class ServerPrintModifier(QWidget):
             self.projectile_label.show()
             self.projectile_list.append(self.projectile_label)
             self.move_p.emit(self.projectile_label)
-            command = 'command-{}-create_projectile'.format(avatar.index)
+            command = 'command-{}-create_projectile'.format(avatar_id)
             self.server_modifier.send_command(command)
             MyThread.mutex.release()
 

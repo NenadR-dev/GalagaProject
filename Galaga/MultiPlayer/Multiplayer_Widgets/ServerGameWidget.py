@@ -9,7 +9,8 @@ from Galaga.MultiPlayer.Server.server_projectile_modifier import ProjectileModif
 from Galaga.MultiPlayer.Server.server_move_modifier import ServerMoveModifier
 from Galaga.Scripts.key_notifier import KeyNotifier
 from Galaga.MultiPlayer.multiplayer_gameplay import Gameplay
-from Galaga.MultiPlayer.Sockets.tcp_listen import TcpListen
+from Galaga.MultiPlayer.Scripts.socket_monitor import SocketMonitor
+from Galaga.MultiPlayer.Common.host_data import HostData
 
 
 class ServerMainWindow(QWidget):
@@ -23,6 +24,14 @@ class ServerMainWindow(QWidget):
         self.start_command_parser()
         self.server.daemon = True
         self.server.start()
+        self.set_up_socket_connections()
+
+    def set_up_socket_connections(self):
+        for node in HostData.client_address:
+            socket_monitor = SocketMonitor(HostData.client_address[node])
+            socket_monitor.trigger_event_signal.connect(self.command_parser.parse_command)
+            socket_monitor.daemon = True
+            socket_monitor.start()
 
     def start_game(self, params):
         self.param = params.split(':')
@@ -68,6 +77,7 @@ class ServerMainWindow(QWidget):
         self.Window.move_p.connect(self.projectiles.add_projectile)
         self.Window.count_enemy_signal.connect(self.gameplay.count_killed_enemies)
         self.Window.remove_enemy_projectile_signal.connect(self.projectiles.remove_projectiles)
+        self.command_parser.fire_projectile_signal.connect(self.Window.print_projectile)
         self.projectiles.daemon = True
         self.projectiles.start()
 
@@ -130,6 +140,6 @@ class ServerMainWindow(QWidget):
         self.key_notifier.rem_key(event.key())
 
     def __update_position__(self, key):
-        params = '{}:{}'.format(0,key)
+        params = '{}:{}'.format(0, key)
         self.move_player_signal.emit(params)
 

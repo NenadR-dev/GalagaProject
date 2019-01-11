@@ -14,13 +14,13 @@ class ClientMainWindow(QWidget):
 
     command_parser = CommandParser()
 
-
     def __init__(self, tcp_socket, parent=None):
         super(ClientMainWindow, self).__init__(parent)
         self.command_parser.start_game_signal.connect(self.start_game)
         self.command_parser.daemon = True
         self.command_parser.start()
         self.tcp = tcp_socket
+
     @pyqtSlot(str)
     def start_game(self, params):
         self.param = params.split(':')
@@ -38,17 +38,6 @@ class ClientMainWindow(QWidget):
         self.movie.frameChanged.connect(self.repaint)
         self.movie.start()
 
-        #self.start_movement()
-
-    '''def start_movement(self):
-        self.movement = ClientMoveModifier(self.Window)
-        self.movement.move_player_signal.connect(self.Window.move_player)
-        self.movement.create_projectile_signal.connect(self.Window.print_projectile)
-        self.movement.move_enemy_signal.connect(self.Window.move_enemy)
-        self.movement.enemy_kamikaze_signal.connect(self.Window.enemy_move_attack)
-        self.movement.daemon = True
-        self.movement.start()'''
-
     def start_key_notifier(self):
         self.key_notifier = KeyNotifier()
         self.key_notifier.key_signal.connect(self.__update_position__)
@@ -61,7 +50,6 @@ class ClientMainWindow(QWidget):
         self.command_parser.move_projectile_signal.connect(self.Window.move_projectile)
         self.command_parser.remove_projectile_signal.connect(self.Window.remove_projectile)
         self.command_parser.remove_enemy_signal.connect(self.Window.remove_enemy)
-        #self.command_parser.enemy_kamikaze_signal.connect(self.Window.enemy_move_attack)
         self.command_parser.enemy_projectile_attack_signal.connect(self.Window.enemy_projectile_attack)
         self.command_parser.remove_player_signal.connect(self.Window.remove_player)
 

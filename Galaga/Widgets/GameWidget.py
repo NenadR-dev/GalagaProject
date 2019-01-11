@@ -53,6 +53,10 @@ class MainWindow(QWidget):
         self.enemy_projectiles = EnemyProjectileModifier(self.Window.label_avatar1, self.Window.label_avatar2, self.Window, self.gameplay)
         self.enemy_projectiles.projectile_move_signal.connect(self.Window.move_enemy_projectile)
         self.Window.move_enemy_p.connect(self.enemy_projectiles.add_projectile)
+<<<<<<< HEAD
+=======
+        #self.Window.remove_enemy_projectile_signal.connect(self.projectiles.remove_projectiles)
+>>>>>>> c1fb9c78350ace7ebe85de0f4752c1de54895d7e
         self.enemy_projectiles.projectile_remove_signal.connect(self.Window.remove_projectile)
         self.enemy_projectiles.player_hit_signal.connect(self.gameplay.player_hit)
         self.enemy_projectiles.daemon = True
