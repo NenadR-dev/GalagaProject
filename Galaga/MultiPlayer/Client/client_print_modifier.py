@@ -5,13 +5,7 @@ from Galaga.Scripts.my_thread import MyThread
 from Galaga.Scripts.avatar import Avatar
 
 
-class MultiplayerPrintModifier(QWidget):
-
-    move_p = pyqtSignal(QLabel)
-    move_enemy_p = pyqtSignal(QLabel)
-    count_enemy_signal = pyqtSignal()
-    remove_enemy_projectile_signal = pyqtSignal()
-    remove_player_projectile_signal = pyqtSignal()
+class ClientPrintModifier(QWidget):
 
     def __init__(self, avatar_num, parent=None):
         QWidget.__init__(self, parent)
@@ -47,7 +41,6 @@ class MultiplayerPrintModifier(QWidget):
             self.projectile_label.move(avatar.x() + 20, avatar.y() - 20)
             self.projectile_label.show()
             self.projectile_list.append(self.projectile_label)
-            self.move_p.emit(self.projectile_label)
             MyThread.mutex.release()
 
     @pyqtSlot(int, int)

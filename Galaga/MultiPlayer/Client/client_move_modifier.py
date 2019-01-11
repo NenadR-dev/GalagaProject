@@ -3,7 +3,7 @@ from PyQt5.QtWidgets import QLabel
 from Galaga.Sockets.socket_send import *
 
 
-class ClientMultiplayerMoveModifer(QThread):
+class ClientMoveModifier(QThread):
 
     create_projectile_signal = pyqtSignal(QLabel)
     move_player_signal = pyqtSignal(QLabel, int)
@@ -28,17 +28,22 @@ class ClientMultiplayerMoveModifer(QThread):
         position = param.split(':')
         self.move_projectile_signal.emit(int(position[0]), int(position[1]))
 
-    @pyqtSlot(int, int)
-    def move_player(self, key, player_id):
-        avatar = self.printer.label_avatar[player_id]
+    @pyqtSlot(str)
+    def move_player(self, params):
+        param = params.split(':')
+        avatar = self.printer.label_avatar[int(param[0])]
+        key = int(param[1])
         if key == Qt.Key_Left:
             if avatar.x() > 10:
                 self.move_player_signal.emit(avatar, avatar.x() - 10)
         elif key == Qt.Key_Right:
             if avatar.x() < 740:
                 self.move_player_signal.emit(avatar, avatar.x() + 10)
-        elif key == Qt.Key_Up:
-            self.create_projectile_signal.emit(avatar)
+
+    @pyqtSlot(int)
+    def create_projectile(self, index):
+        avatar = self.printer.label_avatar[index]
+        self.create_projectile_signal.emit(avatar)
 
     @pyqtSlot(str)
     def enemy_kamikaze(self, params):
