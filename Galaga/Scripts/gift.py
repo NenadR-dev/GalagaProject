@@ -1,33 +1,29 @@
-from PyQt5.QtCore import QSize, pyqtSignal, pyqtSlot
+from PyQt5.QtCore import QSize, pyqtSignal, pyqtSlot, QThread
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QPixmap
 import time, random
 
-class Gift(QLabel):
+class Gift(QThread):
 
-    create_gifr_signal = pyqtSignal(QLabel)
-    remove_gift_signal = pyqtSignal()
+    gift_start_signal = pyqtSignal()
+    gift_remove_signal = pyqtSignal()
 
-    def __init__(self, avatar, parent=None):
-        QLabel.__init__(self, parent)
-        self.avatar = avatar
-        self.gift = QPixmap("img/present1.png")
-        self.gift = self.gift.scaled(45, 45)
-        self.move(random.randint(740, 10), 540)
-        self.setPixmap(self.gift)
-        self.show()
+    def __init__(self):
+        super().__init__()
 
-    def good_power(self):
+    def run(self):
+        self.gift_clock()
+
+    def gift_clock(self):
+        time.sleep(1)
+        while True:
+            time.sleep(7)
+            self.gift_start_signal.emit()
+            time.sleep(4)
+            self.gift_remove_signal.emit()
+
+    def good_power(self, avatar):
         pass #TODO usporiti enemy-je
 
     def bad_power(self):
         pass #TODO usporiti avatara
-
-    def check_collision(self):
-        pass
-
-    def generate_power(self):
-        if random.randint(0, 1):
-            self.bad_power()
-        else:
-            self.good_power()

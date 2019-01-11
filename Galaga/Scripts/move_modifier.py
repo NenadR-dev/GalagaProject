@@ -10,11 +10,13 @@ class MoveModifer(QThread):
     move_player_signal = pyqtSignal(QLabel, int)
     move_enemy_signal = pyqtSignal(int, int)
 
-    def __init__(self, enemy_list, print_modifier, gameplay, parent=None):
+    def __init__(self, enemy_list, print_modifier, gameplay, gifts, gift_type, parent=None):
         QThread.__init__(self, parent)
         self.enemies = enemy_list
         self.printer = print_modifier
         self.gameplay = gameplay
+        self.gifts = gifts
+        self.gift_type = gift_type
 
     def run(self):
         self.move_enemies(enemy_list=self.enemies)
@@ -42,18 +44,22 @@ class MoveModifer(QThread):
         if key == Qt.Key_Left:
             if avatar1.x() > 10:
                 self.move_player_signal.emit(avatar1, avatar1.x() - 10)
+                self.check_collision(avatar1)
 
         elif key == Qt.Key_Right:
             if avatar1.x() < 740:
                 self.move_player_signal.emit(avatar1, avatar1.x() + 10)
+                self.check_collision(avatar1)
 
         elif key == Qt.Key_A:
             if avatar2.x() > 10:
                 self.move_player_signal.emit(avatar2, avatar2.x() - 10)
+                self.check_collision(avatar2)
 
         elif key == Qt.Key_D:
             if avatar2.x() < 740:
                 self.move_player_signal.emit(avatar2, avatar2.x() + 10)
+                self.check_collision(avatar2)
 
         elif key == Qt.Key_Up:
             self.create_projectile_signal.emit(avatar1)
@@ -61,3 +67,16 @@ class MoveModifer(QThread):
         elif key == Qt.Key_W:
             self.create_projectile_signal.emit(avatar2)
 
+    def check_collision(self, avatar):
+        for gift in self.gifts:
+            if gift.isVisible():
+                if self.gift.x() <= avatar.x() <= self.gift.x() + 40:
+                    if self.gift_type:
+                        self.good_power()
+                        self.gift_remove_signal.emit()
+                    else:
+                        self.bad_power()
+                        self.gift_remove_signal.emit()
+
+
+    #TODO napraviti listu gift-ova
