@@ -1,8 +1,14 @@
 from PyQt5.QtCore import pyqtSignal, QThread, pyqtSlot
 import time, random
-from multiprocessing import Queue
+from multiprocessing import Queue, Process
 from Galaga.Scripts.my_thread import MyThread
-from Galaga.Scripts.my_process import MyProcess
+
+
+def choose_enemy(length, queue):
+    q = queue
+    length = length
+    index = random.randint(0, length)
+    q.put(index)
 
 
 class EnemyMoveAttack(QThread):
@@ -19,7 +25,7 @@ class EnemyMoveAttack(QThread):
         self.gameplay = gameplay
         self.can_move = True
         self.queue = Queue()
-        self.process = MyProcess(enemy_list, self.queue)
+        self.length = len(self.enemies) - 1
 
     def run(self):
         self.enemy_clock()
@@ -32,8 +38,9 @@ class EnemyMoveAttack(QThread):
         self.return_enemy_signal.emit(enemy_index, False)
 
     def start_enemy_attack(self):
-        #enemy_index = random.randint(0, len(self.enemies) - 1)
-        #self.process.process()                                     #TODO pitati za proces, da li moze nekako da se pozove iz klase
+        p = Process(target=choose_enemy, args=(self.length, self.queue))
+        p.start()
+        p.join()
         enemy_index = self.queue.get()  # process
 
         avatar = self.avatar1
@@ -56,6 +63,7 @@ class EnemyMoveAttack(QThread):
                 else:
                     self.movement_factor = random.randint(-15, 15)
                 self.enemy_attack_move_signal.emit(enemy_index, self.movement_factor, 5)
+
                 x_coord_diff += self.movement_factor
                 time.sleep(0.02)
             else:
@@ -78,9 +86,9 @@ class EnemyMoveAttack(QThread):
 
     @pyqtSlot(bool)
     def set_enemy_movement(self, can_move):
-        MyThread.projectile_mutex.acquire()
+        #MyThread.projectile_mutex.acquire()
         self.can_move = can_move
-        MyThread.projectile_mutex.release()
+        #MyThread.projectile_mutex.release()
 
 class EnemyProjectileAttack(QThread):
 

@@ -25,12 +25,12 @@ class MoveModifer(QThread):
             if direction == "left":
                 for i in range(30):
                     self.move_enemy_signal.emit(i, enemy_list[i].x() - 10)
-                if enemy_list[0].x() <= 10:
+                if enemy_list[-1].x() <= 10:
                     direction = "right"
             elif direction == "right":
                 for i in range(30):
                     self.move_enemy_signal.emit(i, enemy_list[i].x() + 10)
-                if enemy_list[-1].x() >= 740:
+                if enemy_list[0].x() >= 740:
                     direction = "left"
             time.sleep(self.gameplay.enemy_speed)
 
