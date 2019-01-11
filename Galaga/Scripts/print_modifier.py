@@ -14,7 +14,6 @@ class PrintModifier(QWidget):
     return_enemy_signal = pyqtSignal(bool)
     remove_enemy_projectile_signal = pyqtSignal()
     remove_player_projectile_signal = pyqtSignal()
-    check_collision_signal = pyqtSignal(bool, QLabel)
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
@@ -24,13 +23,11 @@ class PrintModifier(QWidget):
         self.resize(QSize(800, 600))
         self.projectile_list = []
         self.print_enemies()
-<<<<<<< HEAD
         self.gifts = []
         self.gift = QLabel(self)
         self.gift_type = True
-=======
         self.in_attack_ids = []
->>>>>>> b14e74213b5c4cebdac11e3732a71ae7ab888dba
+        self.start_moving_enemy = True
 
     def print_enemies(self):
         if len(self.local_enemy_list) > 0:
@@ -64,8 +61,16 @@ class PrintModifier(QWidget):
     @pyqtSlot(int, int)
     def move_enemy(self, index, position):
         #MyThread.mutex.acquire()
-        self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
+        if self.start_moving_enemy:
+            self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
+        else:
+            time.sleep(3)
+            self.start_moving_enemy = True
         #MyThread.mutex.release()
+
+    @pyqtSlot(bool)
+    def can_move_enemy(self, can_move):
+        self.start_moving_enemy = can_move
 
     @pyqtSlot(QLabel, int)
     def move_projectile(self, projectile, position):
@@ -135,7 +140,6 @@ class PrintModifier(QWidget):
     def new_level(self):
         self.remove_enemy_projectile_signal.emit()
         self.remove_player_projectile_signal.emit()
-        #self.return_enemy_signal.emit(False)            #TODO namestiti vracanje enemyja pre next_level-a
 
         for bullet in self.projectile_list:
             bullet.hide()
@@ -143,7 +147,6 @@ class PrintModifier(QWidget):
             self.return_enemy(id, False)
         for enemy in self.local_enemy_list:
             enemy.show()
-        #self.return_enemy_signal.emit(True)
 
     @pyqtSlot(int)
     def remove_player(self, index):
@@ -198,7 +201,7 @@ class PrintModifier(QWidget):
     @pyqtSlot()
     def remove_gift(self):
         MyThread.mutex.acquire()
+        #self.gifts.remove(self.gift)
         self.gift.hide()
-        self.gifts.remove(self.gift)
         MyThread.mutex.release()
 

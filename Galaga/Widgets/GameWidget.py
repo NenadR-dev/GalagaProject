@@ -53,10 +53,6 @@ class MainWindow(QWidget):
         self.enemy_projectiles = EnemyProjectileModifier(self.Window.label_avatar1, self.Window.label_avatar2, self.Window, self.gameplay)
         self.enemy_projectiles.projectile_move_signal.connect(self.Window.move_enemy_projectile)
         self.Window.move_enemy_p.connect(self.enemy_projectiles.add_projectile)
-<<<<<<< HEAD
-        #self.Window.remove_enemy_projectile_signal.connect(self.projectiles.remove_projectiles)
-=======
->>>>>>> b14e74213b5c4cebdac11e3732a71ae7ab888dba
         self.enemy_projectiles.projectile_remove_signal.connect(self.Window.remove_projectile)
         self.enemy_projectiles.player_hit_signal.connect(self.gameplay.player_hit)
         self.enemy_projectiles.daemon = True
@@ -81,7 +77,7 @@ class MainWindow(QWidget):
                                               self.Window.label_avatar2, self.gameplay)
         self.enemy_move_attack.enemy_attack_move_signal.connect(self.Window.enemy_move_attack)
         self.enemy_move_attack.return_enemy_signal.connect(self.Window.return_enemy)
-        self.Window.return_enemy_signal.connect(self.enemy_move_attack.set_enemy_movement)          #TODO vrati enemy-ja pre next_level
+        self.Window.return_enemy_signal.connect(self.enemy_move_attack.set_enemy_movement)
         self.enemy_move_attack.player_hit_singal.connect(self.gameplay.player_hit)
         self.enemy_move_attack.daemon = True
         self.enemy_move_attack.start()
@@ -99,7 +95,11 @@ class MainWindow(QWidget):
         self.gift.gift_remove_signal.connect(self.Window.remove_gift)
 
         #set good & bad power
-        #self.Window.check_collision_signal.connect(self.gift.check_collision)
+        self.movement.gift_remove_signal.connect(self.Window.remove_gift)
+        self.movement.good_power_signal.connect(self.gift.good_power)
+        self.movement.bad_power_signal.connect(self.gift.bad_power)
+        self.gift.stop_enemies_signal.connect(self.Window.can_move_enemy)
+       # self.gift.punish_avatar_signal.connect()
 
     def start_ui_window(self):
         self.Window = PrintModifier(self)
