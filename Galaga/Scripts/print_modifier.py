@@ -1,8 +1,9 @@
-from PyQt5.QtCore import QSize, pyqtSignal, pyqtSlot, QThread
+from PyQt5.QtCore import QSize, pyqtSignal, pyqtSlot
 from PyQt5.QtWidgets import QWidget, QLabel
 from PyQt5.QtGui import QPixmap
 from Galaga.Scripts.my_thread import MyThread
 from Galaga.Scripts.avatar import Avatar
+import time, random
 
 
 class PrintModifier(QWidget):
@@ -13,6 +14,7 @@ class PrintModifier(QWidget):
     return_enemy_signal = pyqtSignal(bool)
     remove_enemy_projectile_signal = pyqtSignal()
     remove_player_projectile_signal = pyqtSignal()
+    check_collision_signal = pyqtSignal(bool, QLabel)
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
@@ -22,6 +24,9 @@ class PrintModifier(QWidget):
         self.resize(QSize(800, 600))
         self.projectile_list = []
         self.print_enemies()
+        self.gifts = []
+        self.gift = QLabel(self)
+        self.gift_type = True
 
     def print_enemies(self):
         if len(self.local_enemy_list) > 0:
@@ -151,5 +156,36 @@ class PrintModifier(QWidget):
         MyThread.mutex.acquire()
         enemy.hide()
         self.count_enemy_signal.emit()
+        MyThread.mutex.release()
+
+    @pyqtSlot()
+    def print_gift(self):
+        MyThread.mutex.acquire()
+        if random.randint(0, 1):
+            gift_img = QPixmap("img/present1.png")
+            gift_img = gift_img.scaled(45, 45)
+            self.gift.setPixmap(gift_img)
+            x = random.randint(10, 740)
+            self.gift.move(x, 540)
+            self.gift.show()
+            self.gifts.append(self.gift)
+            self.gift_type = True
+        else:
+            gift_img = QPixmap("img/bad_present.png")
+            gift_img = gift_img.scaled(45, 45)
+            self.gift.setPixmap(gift_img)
+            x = random.randint(10, 740)
+            self.gift.move(x, 540)
+            self.gift.show()
+            self.gift_type = False
+            self.gifts.append(self.gift)
+
+        MyThread.mutex.release()
+
+    @pyqtSlot()
+    def remove_gift(self):
+        MyThread.mutex.acquire()
+        self.gift.hide()
+        self.gifts.remove(self.gift)
         MyThread.mutex.release()
 
