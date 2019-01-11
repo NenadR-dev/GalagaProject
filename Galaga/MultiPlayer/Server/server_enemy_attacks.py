@@ -7,7 +7,7 @@ class EnemyMoveAttack(QThread):
 
     enemy_attack_move_signal = pyqtSignal(int, int, int)
     return_enemy_signal = pyqtSignal(int, bool)
-    player_hit_singal = pyqtSignal(int)
+    player_hit_signal = pyqtSignal(int)
 
     def __init__(self, enemy_list, avatar_list, gameplay, parent=None):
         QThread.__init__(self, parent)
@@ -20,7 +20,7 @@ class EnemyMoveAttack(QThread):
         self.enemy_clock()
 
     def kill_avatar_success(self, avatar_index, enemy_index):
-        self.player_hit_singal.emit(avatar_index)
+        self.player_hit_signal.emit(avatar_index)
         self.return_enemy_signal.emit(enemy_index, True)
 
     def kill_avatar_fail(self, enemy_index):
