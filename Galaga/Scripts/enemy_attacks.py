@@ -1,4 +1,4 @@
-from PyQt5.QtCore import pyqtSignal, QThread
+from PyQt5.QtCore import pyqtSignal, QThread, pyqtSlot
 import time, random
 from Galaga.Scripts.my_thread import MyThread
 
@@ -15,7 +15,8 @@ class EnemyMoveAttack(QThread):
         self.avatar1 = avatar1
         self.avatar2 = avatar2
         self.gameplay = gameplay
-        self.can_move = False
+
+        self.can_move = True
 
     def run(self):
         self.enemy_clock()
@@ -41,15 +42,19 @@ class EnemyMoveAttack(QThread):
         x_coord_diff = enemy.x() - avatar.x()
         self.movement_factor = 0
         while enemy.y() < 540:
-            if x_coord_diff > 0:
-                self.movement_factor = random.randint(-20, 10)
-            elif x_coord_diff < 0:
-                self.movement_factor = random.randint(-10, 20)
+            if self.can_move:
+                if x_coord_diff > 0:
+                    self.movement_factor = random.randint(-20, 10)
+                elif x_coord_diff < 0:
+                    self.movement_factor = random.randint(-10, 20)
+                else:
+                    self.movement_factor = random.randint(-15, 15)
+                self.enemy_attack_move_signal.emit(enemy_index, self.movement_factor, 5)
+                x_coord_diff += self.movement_factor
+                time.sleep(0.02)
             else:
-                self.movement_factor = random.randint(-15, 15)
-            self.enemy_attack_move_signal.emit(enemy_index, self.movement_factor, 5)
-            x_coord_diff += self.movement_factor
-            time.sleep(0.02)
+                self.kill_avatar_fail(enemy_index)
+
         if self.avatar1.isVisible() and abs(enemy.x() - self.avatar1.x()) <= 50:
             self.kill_avatar_success(1, enemy_index)
         elif self.avatar1.isVisible() and abs(enemy.x() - self.avatar2.x()) <= 50:
@@ -65,6 +70,11 @@ class EnemyMoveAttack(QThread):
             if self.avatar1.isVisible() or self.avatar2.isVisible():
                 self.start_enemy_attack()
 
+    @pyqtSlot(bool)
+    def set_enemy_movement(self, can_move):
+        MyThread.projectile_mutex.acquire()
+        self.can_move = can_move
+        MyThread.projectile_mutex.release()
 
 class EnemyProjectileAttack(QThread):
 

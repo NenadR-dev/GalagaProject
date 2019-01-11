@@ -10,7 +10,7 @@ class PrintModifier(QWidget):
     move_p = pyqtSignal(QLabel)
     move_enemy_p = pyqtSignal(QLabel)
     count_enemy_signal = pyqtSignal()
-    #return_enemy_signal = pyqtSignal(bool)
+    return_enemy_signal = pyqtSignal(bool)
     remove_enemy_projectile_signal = pyqtSignal()
     remove_player_projectile_signal = pyqtSignal()
 
@@ -120,11 +120,13 @@ class PrintModifier(QWidget):
     def new_level(self):
         self.remove_enemy_projectile_signal.emit()
         self.remove_player_projectile_signal.emit()
-        #self.return_enemy_signal.emit(False)            #TODO namestiti vracanje enemyja pre next_level-a
+        self.return_enemy_signal.emit(False)            #TODO namestiti vracanje enemyja pre next_level-a
+
         for bullet in self.projectile_list:
             bullet.hide()
         for enemy in self.local_enemy_list:
             enemy.show()
+        self.return_enemy_signal.emit(True)
 
     @pyqtSlot(int)
     def remove_player(self, index):
