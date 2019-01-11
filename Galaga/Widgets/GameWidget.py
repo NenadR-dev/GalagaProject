@@ -53,10 +53,6 @@ class MainWindow(QWidget):
         self.enemy_projectiles = EnemyProjectileModifier(self.Window.label_avatar1, self.Window.label_avatar2, self.Window, self.gameplay)
         self.enemy_projectiles.projectile_move_signal.connect(self.Window.move_enemy_projectile)
         self.Window.move_enemy_p.connect(self.enemy_projectiles.add_projectile)
-<<<<<<< HEAD
-=======
-        #self.Window.remove_enemy_projectile_signal.connect(self.projectiles.remove_projectiles)
->>>>>>> c1fb9c78350ace7ebe85de0f4752c1de54895d7e
         self.enemy_projectiles.projectile_remove_signal.connect(self.Window.remove_projectile)
         self.enemy_projectiles.player_hit_signal.connect(self.gameplay.player_hit)
         self.enemy_projectiles.daemon = True
@@ -102,8 +98,8 @@ class MainWindow(QWidget):
         self.movement.gift_remove_signal.connect(self.Window.remove_gift)
         self.movement.good_power_signal.connect(self.gift.good_power)
         self.movement.bad_power_signal.connect(self.gift.bad_power)
-        self.gift.stop_enemies_signal.connect(self.Window.can_move_enemy)
-       # self.gift.punish_avatar_signal.connect()
+        self.gift.stop_enemies_signal.connect(self.Window.can_move_enemy) #TODO zaustaviti nekako sugave enemyje
+       # self.gift.punish_avatar_signal.connect() TODO uraditi sutra za losu silu
 
     def start_ui_window(self):
         self.Window = PrintModifier(self)
