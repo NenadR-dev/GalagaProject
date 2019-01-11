@@ -19,3 +19,6 @@ class Avatar(QLabel):
         self.move(Avatar.position, 540)
         Avatar.position -= 730
         self.show()
+
+    def set_position(self, x):
+        self.move(x, 540)

@@ -1,6 +1,8 @@
 from PyQt5.QtCore import pyqtSignal, QThread, pyqtSlot
 import time, random
+from multiprocessing import Queue
 from Galaga.Scripts.my_thread import MyThread
+from Galaga.Scripts.my_process import MyProcess
 
 
 class EnemyMoveAttack(QThread):
@@ -15,8 +17,14 @@ class EnemyMoveAttack(QThread):
         self.avatar1 = avatar1
         self.avatar2 = avatar2
         self.gameplay = gameplay
+<<<<<<< HEAD
 
         self.can_move = True
+=======
+        self.can_move = True
+        self.queue = Queue()
+        self.process = MyProcess(enemy_list, self.queue)
+>>>>>>> ed2c756be3630cfac6e4207ab5ac91f9661c4e6b
 
     def run(self):
         self.enemy_clock()
@@ -29,7 +37,10 @@ class EnemyMoveAttack(QThread):
         self.return_enemy_signal.emit(enemy_index, False)
 
     def start_enemy_attack(self):
-        enemy_index = random.randint(0, len(self.enemies) - 1)
+        #enemy_index = random.randint(0, len(self.enemies) - 1)
+        #self.process.process()
+        enemy_index = self.queue.get()  # process
+
         avatar = self.avatar1
         if self.avatar1.isVisible():
             avatar = self.avatar1

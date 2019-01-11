@@ -1,9 +1,13 @@
 from PyQt5 import QtCore, QtWidgets
-from PyQt5.QtWidgets import QWidget, QMainWindow, QInputDialog, QLineEdit
-from PyQt5.QtGui import QMovie, QImage, QPalette, QBrush, QIcon
+from PyQt5.QtWidgets import QMainWindow, QInputDialog, QLineEdit
+from PyQt5.QtGui import QImage, QPalette, QBrush, QIcon
 from PyQt5.QtCore import QSize
-from Galaga.Widgets import HostWidget, GameWidget
+from Galaga.Widgets import HostWidget
 from Galaga import menu_design
+from Galaga.MultiPlayer.Sockets import tcp_listen, tcp_send
+from Galaga.MultiPlayer.Multiplayer_Widgets.ServerGameWidget import ServerMainWindow
+from Galaga.MultiPlayer.Scripts.socket_monitor import SocketMonitor
+import socket
 
 
 class Ui_Form(QMainWindow):
@@ -11,6 +15,7 @@ class Ui_Form(QMainWindow):
     def __init__(self):
         super().__init__()
         self.window = self.setupUi(self)
+        self.game = MainWindow()
         self.show()
 
     def setupUi(self, Form):
@@ -85,5 +90,14 @@ class Ui_Form(QMainWindow):
     def get_host_ip(self):
         text, okPressed = QInputDialog.getText(self, "Insert Host IP", "IP:", QLineEdit.Normal, "")
         if okPressed and text != '':
+            bytes_sent = tcp_send.TcpSend(text, 50005).send_msg('new_player')
+            if bytes_sent > 0:
+                self.waiting.setText(QtCore.QCoreApplication.translate("Form", "Connected"))
+                self.init_server_thread(tcp_send.TcpSend.socket)
             print(text)
 
+    def init_server_thread(self, conn):
+        self.server_listener = SocketMonitor(conn)
+        self.server_listener.trigger_event_signal.connect(self.game.command_parser.parse_command)
+        self.server_listener.daemon = True
+        self.server_listener.start()
