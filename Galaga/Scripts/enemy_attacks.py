@@ -25,12 +25,9 @@ class EnemyMoveAttack(QThread):
         self.gameplay = gameplay
         self.can_move = True
         self.queue = Queue()
-<<<<<<< HEAD
-        self.process = MyProcess(enemy_list, self.queue)
+        #self.process = MyProcess(enemy_list, self.queue)
         #self.process.process()
-=======
         self.length = len(self.enemies) - 1
->>>>>>> b14e74213b5c4cebdac11e3732a71ae7ab888dba
 
     def run(self):
         self.enemy_clock()

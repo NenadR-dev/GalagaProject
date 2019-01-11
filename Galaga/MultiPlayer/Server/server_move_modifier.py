@@ -7,7 +7,7 @@ from Galaga.Sockets.socket_send import *
 
 class ServerMoveModifier(QThread):
 
-    create_projectile_signal = pyqtSignal(QLabel)
+    create_projectile_signal = pyqtSignal(int)
     move_player_signal = pyqtSignal(QLabel, int)
     move_enemy_signal = pyqtSignal(int, int)
 
@@ -45,18 +45,19 @@ class ServerMoveModifier(QThread):
         param = params.split(':')
         key = int(param[1])
         playerId = int(param[0])
+        print('moving player: {}'.format(playerId))
         avatar = self.printer.label_avatar[playerId]
         if key == Qt.Key_Left:
             if avatar.x() > 10:
                 self.move_player_signal.emit(avatar, avatar.x() - 10)
-                command = 'command-{}-move_left'.format(id)
+                command = 'command-{}:{}-move_player'.format(playerId, avatar.x())
                 self.server_modifier.send_command(command)
         elif key == Qt.Key_Right:
             if avatar.x() < 740:
                 self.move_player_signal.emit(avatar, avatar.x() + 10)
-                command = 'command-{}-move_right'.format(id)
+                command = 'command-{}:{}-move_player'.format(playerId, avatar.x())
                 self.server_modifier.send_command(command)
         elif key == Qt.Key_Up:
-            self.create_projectile_signal.emit(avatar)
-            command = 'command-{}-move_up'.format(id)
+            self.create_projectile_signal.emit(playerId)
+            command = 'command-{}-print_projectile'.format(playerId)
             self.server_modifier.send_command(command)

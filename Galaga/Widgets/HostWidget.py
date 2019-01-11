@@ -61,10 +61,10 @@ class Ui_Form(QMainWindow):
 
     def startBtn_press(self):
         for node in HostData.client_address:
-            command = 'command-{}:{}-start_game'.format(HostData.connected_client + 1, node)
+            command = 'command-{}:{}-start_game'.format(HostData.connected_client+1, node)
             HostData.client_address[node].send(command.encode('utf8'))
         self.window = ServerMainWindow()
-        self.window.start_game('{}'.format(HostData.connected_client + 1))
+        self.window.start_game('{}'.format(HostData.connected_client+1))
         self.close()
 
     @pyqtSlot(int)

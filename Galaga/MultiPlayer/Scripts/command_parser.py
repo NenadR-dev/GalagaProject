@@ -24,7 +24,7 @@ class CommandParser(QThread):
     def parse_command(self, param, command):
         CommonThread.mutex_movement.acquire()
         if command == 'create_projectile':
-            print(command)
+            print('player {} fired a bullet'.format(param))
             self.fire_projectile_signal.emit(int(param)) #param se salje kao index
         elif command == 'move_player':
             print('{} -> {}'.format(command, param))
@@ -33,13 +33,11 @@ class CommandParser(QThread):
             print(command + param)
             self.print_player_signal.emit(param) #salje se kao index:position
         elif command == 'start_game':
-            print('{} avatar id {}'.format(command,param))
+            print('player count: {} avatar id: {}'.format(command, param))
             self.start_game_signal.emit(param)  #param se salje kao player_count:player_id
         elif command == 'move_enemy':
-            print(command)
             self.move_enemy_signal.emit(param)  #param se salje kao index:position
         elif command == 'move_projectile':
-            print(command)
             self.move_projectile_signal.emit(param) #param se salje kao index:position
         elif command == 'remove_projectile':
             print(command)

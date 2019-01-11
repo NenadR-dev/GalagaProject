@@ -24,13 +24,10 @@ class PrintModifier(QWidget):
         self.resize(QSize(800, 600))
         self.projectile_list = []
         self.print_enemies()
-<<<<<<< HEAD
         self.gifts = []
         self.gift = QLabel(self)
         self.gift_type = True
-=======
         self.in_attack_ids = []
->>>>>>> b14e74213b5c4cebdac11e3732a71ae7ab888dba
 
     def print_enemies(self):
         if len(self.local_enemy_list) > 0:

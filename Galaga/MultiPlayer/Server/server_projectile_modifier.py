@@ -56,6 +56,7 @@ class ProjectileModifier(QThread):
             self.projectiles.remove(p)
         MyThread.projectile_mutex.release()
 
+
 class EnemyProjectileModifier(QThread):
 
     projectile_move_signal = pyqtSignal(QLabel, int)
