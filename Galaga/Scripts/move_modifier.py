@@ -9,6 +9,9 @@ class MoveModifer(QThread):
     create_projectile_signal = pyqtSignal(QLabel)
     move_player_signal = pyqtSignal(QLabel, int)
     move_enemy_signal = pyqtSignal(int, int)
+    good_power_signal = pyqtSignal()
+    bad_power_signal = pyqtSignal(QLabel)
+    gift_remove_signal = pyqtSignal()
 
     def __init__(self, enemy_list, print_modifier, gameplay, gifts, gift_type, parent=None):
         QThread.__init__(self, parent)
@@ -70,13 +73,10 @@ class MoveModifer(QThread):
     def check_collision(self, avatar):
         for gift in self.gifts:
             if gift.isVisible():
-                if self.gift.x() <= avatar.x() <= self.gift.x() + 40:
+                if gift.x() <= avatar.x() <= gift.x() + 40:
                     if self.gift_type:
-                        self.good_power()
+                        self.good_power_signal.emit()
                         self.gift_remove_signal.emit()
                     else:
-                        self.bad_power()
+                        self.bad_power_signal.emit(avatar)
                         self.gift_remove_signal.emit()
-
-
-    #TODO napraviti listu gift-ova

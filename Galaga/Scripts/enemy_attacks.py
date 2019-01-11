@@ -1,7 +1,6 @@
 from PyQt5.QtCore import pyqtSignal, QThread, pyqtSlot
 import time, random
 from multiprocessing import Queue, Process
-from Galaga.Scripts.my_thread import MyThread
 
 
 def choose_enemy(length, queue):
@@ -25,8 +24,6 @@ class EnemyMoveAttack(QThread):
         self.gameplay = gameplay
         self.can_move = True
         self.queue = Queue()
-        #self.process = MyProcess(enemy_list, self.queue)
-        #self.process.process()
         self.length = len(self.enemies) - 1
 
     def run(self):

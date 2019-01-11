@@ -1,12 +1,14 @@
 from PyQt5.QtCore import QSize, pyqtSignal, pyqtSlot, QThread
-from PyQt5.QtWidgets import QWidget, QLabel
-from PyQt5.QtGui import QPixmap
+from PyQt5.QtWidgets import QLabel
 import time, random
 
 class Gift(QThread):
 
     gift_start_signal = pyqtSignal()
     gift_remove_signal = pyqtSignal()
+    stop_enemies_signal = pyqtSignal(bool)
+    punish_avatar_signal = pyqtSignal(QLabel)
+
 
     def __init__(self):
         super().__init__()
@@ -22,8 +24,10 @@ class Gift(QThread):
             time.sleep(4)
             self.gift_remove_signal.emit()
 
-    def good_power(self, avatar):
-        pass #TODO usporiti enemy-je
+    @pyqtSlot()
+    def good_power(self):
+        self.stop_enemies_signal.emit(False)
 
-    def bad_power(self):
-        pass #TODO usporiti avatara
+    @pyqtSlot(QLabel)
+    def bad_power(self, avatar):
+        self.punish_avatar_signal(avatar)
