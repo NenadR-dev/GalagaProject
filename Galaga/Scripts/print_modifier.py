@@ -87,7 +87,7 @@ class PrintModifier(QWidget):
     @pyqtSlot(int, bool)
     def return_enemy(self, enemy_index, destroyed):
         #MyThread.mutex.acquire()
-        self.in_attack_ids.remove(enemy_index)
+
         if destroyed:
             self.local_enemy_list[enemy_index].hide()
             self.count_enemy_signal.emit()
@@ -104,6 +104,8 @@ class PrintModifier(QWidget):
             neighbour = self.local_enemy_list[enemy_index + 1]
             enemy = self.local_enemy_list[enemy_index]
             enemy.move(neighbour.x() + 50, neighbour.y())
+
+        self.in_attack_ids.remove(enemy_index)
         #MyThread.mutex.release()
 
     @pyqtSlot(int)
@@ -167,7 +169,7 @@ class PrintModifier(QWidget):
 
     @pyqtSlot()
     def print_gift(self):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
         if random.randint(0, 1):
             gift_img = QPixmap("img/present1.png")
             gift_img = gift_img.scaled(45, 45)
@@ -190,11 +192,11 @@ class PrintModifier(QWidget):
             self.change_gift_type_signal.emit(self.gift_type)
 
 
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
     @pyqtSlot()
     def remove_gift(self):
-        MyThread.mutex.acquire()
+        #MyThread.mutex.acquire()
         self.gift.hide()
-        MyThread.mutex.release()
+        #MyThread.mutex.release()
 
