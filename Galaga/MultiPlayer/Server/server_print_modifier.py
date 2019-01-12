@@ -130,7 +130,7 @@ class ServerPrintModifier(QWidget):
     def move_enemy_projectile(self, projectile, position):
         MyThread.mutex.acquire()
         command = 'command-{}:{}-move_projectile'.format(self.projectile_list.index(projectile), position)
-        self.server_modifier.send_command(command)
+        #self.server_modifier.send_command(command)
         projectile.move(projectile.x(), position)
         MyThread.mutex.release()
 
