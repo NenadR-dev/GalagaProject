@@ -6,9 +6,7 @@ class Gift(QThread):
 
     gift_start_signal = pyqtSignal()
     gift_remove_signal = pyqtSignal()
-    stop_enemies_signal = pyqtSignal(bool)
-    punish_avatar_signal = pyqtSignal(QLabel)
-
+    stop_enemies_signal = pyqtSignal()
 
     def __init__(self):
         super().__init__()
@@ -26,8 +24,4 @@ class Gift(QThread):
 
     @pyqtSlot()
     def good_power(self):
-        self.stop_enemies_signal.emit(False)
-
-    @pyqtSlot(QLabel)
-    def bad_power(self, avatar):
-        self.punish_avatar_signal(avatar)
+        self.stop_enemies_signal.emit()

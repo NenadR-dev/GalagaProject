@@ -1,6 +1,6 @@
 import sys
 from Galaga.Scripts.print_modifier import PrintModifier
-from Galaga.Scripts.move_modifier import MoveModifer
+from Galaga.Scripts.move_modifier import MoveModifer, GiftPower
 from Galaga.Scripts.key_notifier import KeyNotifier
 from Galaga.Scripts.projectile_modifier import ProjectileModifier, EnemyProjectileModifier
 from Galaga.Scripts.enemy_attacks import EnemyMoveAttack, EnemyProjectileAttack
@@ -59,7 +59,7 @@ class MainWindow(QWidget):
         self.enemy_projectiles.start()
 
         # set movement
-        self.movement = MoveModifer(self.Window.local_enemy_list, self.Window, self.gameplay, self.Window.gifts, self.Window.gift_type)
+        self.movement = MoveModifer(self.Window.local_enemy_list, self.Window, self.gameplay, self.Window.gifts)
         self.movement.create_projectile_signal.connect(self.Window.print_projectile)
         self.movement.move_player_signal.connect(self.Window.move_player)
         self.movement.move_enemy_signal.connect(self.Window.move_enemy)
@@ -89,17 +89,21 @@ class MainWindow(QWidget):
 
         # set gift (good or bas power)
         self.gift = Gift()
-        self.gift.deamon = True
+        self.gift.daemon = True
         self.gift.start()
         self.gift.gift_start_signal.connect(self.Window.print_gift)
         self.gift.gift_remove_signal.connect(self.Window.remove_gift)
+        self.powers = GiftPower()
+        self.powers.change_movement_signal.connect(self.movement.change_enemies_movement)
+        self.powers.daemon = True
+        self.powers.start()
 
         #set good & bad power
+        self.Window.change_gift_type_signal.connect(self.movement.change_gift_type)
         self.movement.gift_remove_signal.connect(self.Window.remove_gift)
         self.movement.good_power_signal.connect(self.gift.good_power)
-        self.movement.bad_power_signal.connect(self.gift.bad_power)
-        self.gift.stop_enemies_signal.connect(self.Window.can_move_enemy) #TODO zaustaviti nekako sugave enemyje
-       # self.gift.punish_avatar_signal.connect() TODO uraditi sutra za losu silu
+        self.movement.bad_power_signal.connect(self.gameplay.bad_power)
+        self.gift.stop_enemies_signal.connect(self.powers.work)
 
     def start_ui_window(self):
         self.Window = PrintModifier(self)

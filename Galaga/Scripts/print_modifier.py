@@ -14,6 +14,7 @@ class PrintModifier(QWidget):
     return_enemy_signal = pyqtSignal(bool)
     remove_enemy_projectile_signal = pyqtSignal()
     remove_player_projectile_signal = pyqtSignal()
+    change_gift_type_signal = pyqtSignal(bool)
 
     def __init__(self, parent=None):
         QWidget.__init__(self, parent)
@@ -27,7 +28,6 @@ class PrintModifier(QWidget):
         self.gift = QLabel(self)
         self.gift_type = True
         self.in_attack_ids = []
-        self.start_moving_enemy = True
 
     def print_enemies(self):
         if len(self.local_enemy_list) > 0:
@@ -60,17 +60,8 @@ class PrintModifier(QWidget):
 
     @pyqtSlot(int, int)
     def move_enemy(self, index, position):
-        #MyThread.mutex.acquire()
-        if self.start_moving_enemy:
-            self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
-        else:
-            time.sleep(3)       #todo treba da se zaustave enemies
-            self.start_moving_enemy = True
-        #MyThread.mutex.release()
+        self.local_enemy_list[index].move(position, self.local_enemy_list[index].y())
 
-    @pyqtSlot(bool)
-    def can_move_enemy(self, can_move):
-        self.start_moving_enemy = can_move
 
     @pyqtSlot(QLabel, int)
     def move_projectile(self, projectile, position):
@@ -186,6 +177,7 @@ class PrintModifier(QWidget):
             self.gift.show()
             self.gifts.append(self.gift)
             self.gift_type = True
+            self.change_gift_type_signal.emit(self.gift_type)
         else:
             gift_img = QPixmap("img/bad_present.png")
             gift_img = gift_img.scaled(45, 45)
@@ -195,13 +187,14 @@ class PrintModifier(QWidget):
             self.gift.show()
             self.gift_type = False
             self.gifts.append(self.gift)
+            self.change_gift_type_signal.emit(self.gift_type)
+
 
         MyThread.mutex.release()
 
     @pyqtSlot()
     def remove_gift(self):
         MyThread.mutex.acquire()
-        #self.gifts.remove(self.gift)
         self.gift.hide()
         MyThread.mutex.release()
 

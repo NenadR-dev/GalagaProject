@@ -1,4 +1,5 @@
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, QThread
+from PyQt5.QtWidgets import QLabel
 from Galaga.Scripts.my_thread import MyThread
 from Galaga.Scripts.avatar import Avatar
 
@@ -90,3 +91,12 @@ class Gameplay(QThread):
 
             self.next_level_signal.emit()
             MyThread.gameplay_lock.release()
+
+    @pyqtSlot(int)
+    def bad_power(self, avatar_id):
+            if avatar_id == 1:
+                self.avatar1_lifes -= 1
+                print('Avatar1 je izgubio zivot')
+            else:
+                self.avatar2_lifes -= 1
+                print('Avatar2 je izgubio zivot')

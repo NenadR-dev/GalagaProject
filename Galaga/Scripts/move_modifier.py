@@ -4,22 +4,24 @@ import time
 from Galaga.Scripts.my_thread import MyThread
 from Galaga.Sockets.socket_send import *
 
+
 class MoveModifer(QThread):
 
     create_projectile_signal = pyqtSignal(QLabel)
     move_player_signal = pyqtSignal(QLabel, int)
     move_enemy_signal = pyqtSignal(int, int)
     good_power_signal = pyqtSignal()
-    bad_power_signal = pyqtSignal(QLabel)
+    bad_power_signal = pyqtSignal(int)
     gift_remove_signal = pyqtSignal()
 
-    def __init__(self, enemy_list, print_modifier, gameplay, gifts, gift_type, parent=None):
+    def __init__(self, enemy_list, print_modifier, gameplay, gifts, parent=None):
         QThread.__init__(self, parent)
         self.enemies = enemy_list
         self.printer = print_modifier
         self.gameplay = gameplay
         self.gifts = gifts
-        self.gift_type = gift_type
+        self.gift_type = True
+        self.can_enemy_move = True
 
     def run(self):
         self.move_enemies(enemy_list=self.enemies)
@@ -27,17 +29,19 @@ class MoveModifer(QThread):
     def move_enemies(self, enemy_list):
         direction = "left"
         while True:
-            if direction == "left":
-                for i in range(30):
-                    self.move_enemy_signal.emit(i, enemy_list[i].x() - 10)
-                if enemy_list[-1].x() <= 10:
-                    direction = "right"
-            elif direction == "right":
-                for i in range(30):
-                    self.move_enemy_signal.emit(i, enemy_list[i].x() + 10)
-                if enemy_list[0].x() >= 740:
-                    direction = "left"
+            if self.can_enemy_move:
+                if direction == "left":
+                    for i in range(30):
+                        self.move_enemy_signal.emit(i, enemy_list[i].x() - 10)
+                    if enemy_list[-1].x() <= 10:
+                        direction = "right"
+                elif direction == "right":
+                    for i in range(30):
+                        self.move_enemy_signal.emit(i, enemy_list[i].x() + 10)
+                    if enemy_list[0].x() >= 740:
+                        direction = "left"
             time.sleep(self.gameplay.enemy_speed)
+
 
     @pyqtSlot(int)
     def move_player(self, key):
@@ -77,6 +81,41 @@ class MoveModifer(QThread):
                     if self.gift_type:
                         self.good_power_signal.emit()
                         self.gift_remove_signal.emit()
+                        self.gifts.remove(gift)
                     else:
-                        self.bad_power_signal.emit(avatar)
+                        self.bad_power_signal.emit(avatar.index)
                         self.gift_remove_signal.emit()
+                        self.gifts.remove(gift)
+
+    @pyqtSlot()
+    def change_enemies_movement(self):
+        self.can_enemy_move = not self.can_enemy_move
+
+    @pyqtSlot(bool)
+    def change_gift_type(self, gift):
+        self.gift_type = gift
+
+class GiftPower(QThread):
+
+    change_movement_signal = pyqtSignal()
+
+    def __init__(self):
+        super().__init__()
+        self.good_power = False
+
+    def run(self):
+        self.check_power()
+
+    def check_power(self):
+        while True:
+            if self.good_power:
+                self.change_movement_signal.emit()
+                time.sleep(4)
+                self.change_movement_signal.emit()
+                self.good_power = False
+
+            time.sleep(0.5)
+
+    @pyqtSlot()
+    def work(self):
+        self.good_power = True
