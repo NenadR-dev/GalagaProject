@@ -3,6 +3,7 @@ from PyQt5.QtWidgets import QWidget
 from PyQt5.QtCore import pyqtSignal, pyqtSlot, Qt
 from Galaga.MultiPlayer.Scripts.command_parser import CommandParser
 from Galaga.MultiPlayer.Client.client_print_modifier import ClientPrintModifier
+from Galaga.MultiPlayer.Client.client_projectile_modifier import  ProjectileModifier
 from Galaga.MultiPlayer.multiplayer_gameplay import Gameplay
 from Galaga.Scripts.key_notifier import KeyNotifier
 from Galaga.MultiPlayer.Sockets.tcp_send import TcpSend
@@ -32,6 +33,7 @@ class ClientMainWindow(QWidget):
         self.start_ui_window(self.player_count)
         self.start_command_parser()
         self.start_key_notifier()
+        self.start_projectile_movement()
 
         #set gif animation
         self.movie = QMovie("img/space-background.gif")
@@ -47,12 +49,17 @@ class ClientMainWindow(QWidget):
         self.command_parser.move_player_signal.connect(self.Window.move_player)
         self.command_parser.fire_projectile_signal.connect(self.Window.print_projectile)
         self.command_parser.move_enemy_signal.connect(self.Window.move_enemy)
-        self.command_parser.move_projectile_signal.connect(self.Window.move_projectile)
+        #self.command_parser.move_projectile_signal.connect(self.Window.move_projectile)
         self.command_parser.remove_projectile_signal.connect(self.Window.remove_projectile)
         self.command_parser.remove_enemy_signal.connect(self.Window.remove_enemy)
         self.command_parser.enemy_projectile_attack_signal.connect(self.Window.enemy_projectile_attack)
         self.command_parser.remove_player_signal.connect(self.Window.remove_player)
 
+    def start_projectile_movement(self):
+        self.projectiles = ProjectileModifier(self.Window.projectile_list)
+        self.projectiles.projectile_move_signal.connect(self.Window.move_projectile)
+        self.projectiles.daemon = True
+        self.projectiles.start()
 
     def start_ui_window(self, number_of_players):
         self.Window = ClientPrintModifier(number_of_players, self)

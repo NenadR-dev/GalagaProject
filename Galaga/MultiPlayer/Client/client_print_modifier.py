@@ -7,6 +7,9 @@ from Galaga.Scripts.avatar import Avatar
 
 class ClientPrintModifier(QWidget):
 
+    add_projectile_signal = pyqtSignal(QLabel)
+    remove_projectile_signal = pyqtSignal(QLabel)
+
     def __init__(self, avatar_num, parent=None):
         QWidget.__init__(self, parent)
         self.local_enemy_list = []
@@ -34,7 +37,6 @@ class ClientPrintModifier(QWidget):
     def print_projectile(self, avatar_index):
         avatar = self.label_avatar[avatar_index]
         if avatar.isVisible():
-            MyThread.mutex.acquire()
             pew = QPixmap("img/projectile.png")
             pew = pew.scaled(10, 10)
             self.projectile_label = QLabel(self)
@@ -42,7 +44,6 @@ class ClientPrintModifier(QWidget):
             self.projectile_label.move(avatar.x() + 20, avatar.y() - 20)
             self.projectile_label.show()
             self.projectile_list.append(self.projectile_label)
-            MyThread.mutex.release()
 
     @pyqtSlot(str)
     def move_enemy(self, direction):
@@ -55,14 +56,9 @@ class ClientPrintModifier(QWidget):
                 self.local_enemy_list[index].move(self.local_enemy_list[index].x()+10, self.local_enemy_list[index].y())
         MyThread.mutex.release()
 
-    @pyqtSlot(str)
-    def move_projectile(self, params):
-        MyThread.mutex.acquire()
-        param = params.split(':')
-        index = int(param[0])
-        position = int(param[1])
-        self.projectile_list[index].move(self.projectile_list[index].x(), position)
-        MyThread.mutex.release()
+    @pyqtSlot(QLabel, int)
+    def move_projectile(self, projectile, position):
+        projectile.move(projectile.x(), position)
 
     @pyqtSlot(str)
     def enemy_move_attack(self, params):
@@ -120,7 +116,7 @@ class ClientPrintModifier(QWidget):
     def remove_projectile(self, id):
         MyThread.mutex.acquire()
         self.projectile_list[id].hide()
-        del self.projectile_list[id]
+        self.projectile_list.remove(self.projectile_list[id])
         MyThread.mutex.release()
 
     @pyqtSlot(int)

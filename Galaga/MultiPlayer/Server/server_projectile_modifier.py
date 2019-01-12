@@ -34,14 +34,15 @@ class ProjectileModifier(QThread):
             time.sleep(0.02)
 
     def check_collision(self, projectile_list, projectile):
-        if projectile.isVisible() and projectile.y() <= 160:
-            for enemy in reversed(self.enemies):
-                if enemy.isVisible() and projectile.y() <= enemy.y():
+        if projectile.isVisible():
+            for enemy in self.enemies:
+                if enemy.isVisible():
                     if enemy.x() <= projectile.x() <= enemy.x() + 50:
-                        projectile_list.remove(projectile)
-                        self.projectile_remove_signal.emit(projectile)
-                        self.enemy_killed_signal.emit(enemy)
-                        break
+                        if enemy.y() <= projectile.y() <= enemy.y() + 50:
+                            projectile_list.remove(projectile)
+                            self.projectile_remove_signal.emit(projectile)
+                            self.enemy_killed_signal.emit(enemy)
+                            break
 
     @pyqtSlot(QLabel)
     def add_projectile(self, projectile):
